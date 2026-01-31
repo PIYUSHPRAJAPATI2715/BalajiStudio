@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "name": "Rahul & Priya",
+    "event": "Wedding",
+    "rating": 5,
+    "text": "Sidhi Vinayak events made our wedding absolutely magical. The decoration, the flow of events, everything was perfect. Highly recommended!",
+    "image": "https://images.unsplash.com/photo-1663185566085-f5b248a8c430?q=80&w=200&h=200&auto=format&fit=crop",
+    "createdAt": "2026-01-31T18:04:33.475Z"
+  },
+  {
+    "id": "2",
+    "name": "Amit Sharma",
+    "event": "Corporate Event",
+    "rating": 5,
+    "text": "Professionalism at its best. They handled our corporate gala with such ease. The team is very cooperative and creative.",
+    "image": "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200&h=200&auto=format&fit=crop",
+    "createdAt": "2026-01-31T18:04:33.475Z"
+  },
+  {
+    "id": "3",
+    "name": "Sneha Gupta",
+    "event": "Birthday Party",
+    "rating": 4,
+    "text": "Great management! The theme was exactly what we wanted for our daughter's birthday. Thank you for making it special.",
+    "image": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&h=200&auto=format&fit=crop",
+    "createdAt": "2026-01-31T18:04:33.475Z"
+  },
+  {
+    "name": "Piyush Prajapati",
+    "event": "Birthday",
+    "rating": 3,
+    "text": "nice service ",
+    "image": "https://ui-avatars.com/api/?name=Piyush%20Prajapati&background=random",
+    "id": "r8mllk6z9",
+    "createdAt": "2026-01-31T18:05:48.283Z"
+  }
+]
