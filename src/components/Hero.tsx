@@ -41,7 +41,7 @@ export default function Hero() {
                     transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
                     className="text-4xl md:text-6xl lg:text-8xl font-bold font-heading text-white mb-6 uppercase drop-shadow-2xl"
                 >
-                    Balaji Events <br className="hidden md:block" /> & Photo Studio
+                    Sidhi Vinayak <br className="hidden md:block" /> events
                 </motion.h1>
 
                 <motion.p
@@ -50,7 +50,7 @@ export default function Hero() {
                     transition={{ duration: 0.8, delay: 0.8 }}
                     className="text-lg md:text-2xl text-gray-200 max-w-2xl mb-12 font-light"
                 >
-                    Events & Photo Studio in Jaipur. Creating timeless memories for your special moments.
+                    Premium Event Management services. Creating timeless memories for your special moments.
                 </motion.p>
 
                 <motion.div

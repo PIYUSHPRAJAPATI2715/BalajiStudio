@@ -33,7 +33,7 @@ export default function Navbar() {
             <div className="container mx-auto px-4 flex justify-between items-center">
                 <Link href="/" className="text-xl md:text-2xl font-bold flex items-center gap-2 text-primary font-heading">
                     <Camera className="w-8 h-8" />
-                    <span>Balaji Events & Photo Studio</span>
+                    <span>Sidhi Vinayak events</span>
                 </Link>
 
                 {/* Desktop Menu */}

@@ -2,6 +2,8 @@ import Hero from '@/components/Hero';
 import Services from '@/components/Services';
 import Gallery from '@/components/Gallery';
 import Team from '@/components/Team';
+import Reviews from '@/components/Reviews';
+import BookingCalendar from '@/components/BookingCalendar';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
@@ -13,6 +15,8 @@ export default function Home() {
       <Services />
       <Gallery />
       <Team />
+      <Reviews />
+      <BookingCalendar />
       <Footer />
     </main>
   );
