@@ -12,22 +12,22 @@ export default function About() {
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.8 }}
                         className="w-full md:w-1/2 relative"
                     >
-                        <div className="grid grid-cols-2 gap-4">
-                            <img
-                                src="https://images.unsplash.com/photo-1511285560982-1351cdeb9821?q=80&w=800&auto=format&fit=crop"
-                                alt="Wedding Photography"
-                                className="rounded-2xl border border-white/5 hover:scale-105 transition-transform duration-500"
-                            />
-                            <div className="space-y-4 pt-8">
-                                <img
-                                    src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop"
-                                    alt="Event Decoration"
-                                    className="rounded-2xl border border-white/5 hover:scale-105 transition-transform duration-500"
-                                />
-                            </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            <img src="/assets/wedding_1.png" alt="Wedding" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover" />
+                            <img src="/assets/prewedding_1.png" alt="Pre-Wedding" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover mt-4" />
+                            <img src="/assets/c1.jfif" alt="Cinematic" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover" />
+
+                            <img src="/assets/b1.jfif" alt="Bride Entry" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover" />
+                            <img src="/assets/v1.jfif" alt="Vermala" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover mt-4" />
+                            <img src="/assets/s1.jfif" alt="Maternity" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover" />
+
+                            <img src="/assets/p1.jfif" alt="Birthday" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover" />
+                            <img src="/assets/h1.jfif" alt="House Opening" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover mt-4" />
+                            <img src="/assets/d1.jfif" alt="Drone" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover" />
                         </div>
                     </motion.div>
 
@@ -35,7 +35,8 @@ export default function About() {
                     <motion.div
                         initial={{ opacity: 0, x: 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
                         className="w-full md:w-1/2"
                     >
                         <h2 className="text-primary font-medium tracking-wider uppercase mb-2">About Us</h2>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Send, Phone, Mail, MapPin, ExternalLink } from 'lucide-react';
+import { Send, Phone, Mail, MapPin, ExternalLink, Youtube, Instagram } from 'lucide-react';
 
 export default function Contact() {
     const [formData, setFormData] = useState({
@@ -20,6 +20,21 @@ export default function Contact() {
         setLoading(true);
         setStatus('idle');
 
+        // Construct WhatsApp Message
+        const text = `*New Inquiry via Website*
+        
+*Name:* ${formData.name}
+*Phone:* ${formData.phone}
+*Email:* ${formData.email}
+*Message:* ${formData.message}`;
+
+        const encodedText = encodeURIComponent(text);
+        const whatsappUrl = `https://wa.me/917891766624?text=${encodedText}`;
+
+        // Open WhatsApp
+        window.open(whatsappUrl, '_blank');
+
+        // Also save to backend (optional, but good for backup)
         try {
             const res = await fetch('/api/contact', {
                 method: 'POST',
@@ -30,13 +45,15 @@ export default function Contact() {
             if (res.ok) {
                 setStatus('success');
                 setFormData({ name: '', email: '', phone: '', message: '' });
-                // Reset success message after 5 seconds
                 setTimeout(() => setStatus('idle'), 5000);
             } else {
-                setStatus('error');
+                setStatus('error'); // Silent fail if backend fails, since WhatsApp opened
             }
         } catch (error) {
-            setStatus('error');
+            console.error(error);
+            // Don't show error to user if WhatsApp opened successfully
+            setStatus('success');
+            setFormData({ name: '', email: '', phone: '', message: '' });
         } finally {
             setLoading(false);
         }
@@ -96,6 +113,34 @@ export default function Contact() {
                                         <p className="text-sm text-primary mb-1 font-medium">Visit Us</p>
                                         <p className="font-bold text-lg">Niwaru, Jhotwara, Jaipur, Rajasthan</p>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div className="pt-6 mt-6 border-t border-white/10">
+                                <p className="text-sm text-primary mb-4 font-medium">Follow Us</p>
+                                <div className="flex gap-4">
+                                    <a
+                                        href="https://www.youtube.com/@SidhiVinayak-Jaipur"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-3 p-3 bg-zinc-800 rounded-xl border border-white/5 hover:border-primary/50 transition-all group flex-1"
+                                    >
+                                        <div className="p-2 bg-red-600/20 rounded-lg text-red-500 group-hover:bg-red-600 group-hover:text-white transition-colors">
+                                            <Youtube className="w-5 h-5" />
+                                        </div>
+                                        <span className="font-medium text-gray-300 group-hover:text-white">YouTube</span>
+                                    </a>
+                                    <a
+                                        href="https://www.instagram.com/sidhivinayak_eventsjaipur/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-3 p-3 bg-zinc-800 rounded-xl border border-white/5 hover:border-primary/50 transition-all group flex-1"
+                                    >
+                                        <div className="p-2 bg-pink-600/20 rounded-lg text-pink-500 group-hover:bg-pink-600 group-hover:text-white transition-colors">
+                                            <Instagram className="w-5 h-5" />
+                                        </div>
+                                        <span className="font-medium text-gray-300 group-hover:text-white">Instagram</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -177,7 +222,7 @@ export default function Contact() {
                         </form>
                     </div>
                 </div>
-            </div>
-        </section>
+            </div >
+        </section >
     );
 }

@@ -119,18 +119,20 @@ export default function BookingCalendar() {
                                         key={day.toISOString()}
                                         onClick={() => handleDateClick(day)}
                                         className={`
-                                            relative h-14 rounded-lg flex flex-col items-center justify-center transition-all
-                                            ${isSelected ? 'ring-2 ring-primary scale-105 z-10' : ''}
+                                            relative h-14 rounded-lg flex flex-col items-center justify-center transition-all duration-300
+                                            ${isSelected
+                                                ? 'ring-2 ring-primary bg-primary/20 scale-105 z-10 shadow-[0_0_20px_rgba(234,179,8,0.3)]'
+                                                : ''}
                                             ${booking
-                                                ? 'bg-red-500/20 text-red-200 border border-red-500/30'
-                                                : 'bg-zinc-800 text-white hover:bg-zinc-700 border border-white/5'}
+                                                ? 'bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20'
+                                                : isSelected ? '' : 'bg-zinc-800/50 text-white hover:bg-zinc-700/80 border border-white/5 hover:border-primary/30'}
                                         `}
                                     >
                                         <span className={`text-sm ${isToday(day) ? 'font-bold text-primary' : ''}`}>
                                             {format(day, 'd')}
                                         </span>
                                         {booking && (
-                                            <span className="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
+                                            <span className="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 animate-pulse"></span>
                                         )}
                                     </button>
                                 );

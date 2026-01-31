@@ -27,7 +27,7 @@ export default function Navbar() {
 
     return (
         <nav
-            className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-black/80 backdrop-blur-md py-4' : 'bg-transparent py-6'
+            className={`fixed w-full z-50 transition-all duration-300 border-b ${scrolled ? 'bg-black/90 backdrop-blur-md py-4 border-white/10' : 'bg-transparent py-6 border-transparent'
                 }`}
         >
             <div className="container mx-auto px-4 flex justify-between items-center">
@@ -35,7 +35,7 @@ export default function Navbar() {
                     <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/50">
                         <img src="/logo.jpg" alt="Sidhi Vinayak Events" className="w-full h-full object-cover" />
                     </div>
-                    <span>Sidhi Vinayak events</span>
+                    <span>Sidhi Vinayak Events</span>
                 </Link>
 
                 {/* Desktop Menu */}

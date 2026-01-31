@@ -39,7 +39,7 @@ export default function Team() {
                     <h3 className="text-4xl md:text-5xl font-bold font-heading">Meet the Creatives</h3>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
                     {team.map((member, index) => (
                         <motion.div
                             key={index}
@@ -49,7 +49,7 @@ export default function Team() {
                             transition={{ duration: 0.6 }}
                             className="bg-zinc-900 rounded-2xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all group"
                         >
-                            <div className="h-72 overflow-hidden relative">
+                            <div className="h-60 overflow-hidden relative">
                                 <img
                                     src={member.image}
                                     alt={member.name}

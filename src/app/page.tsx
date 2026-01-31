@@ -7,6 +7,7 @@ import Reviews from '@/components/Reviews';
 import BookingCalendar from '@/components/BookingCalendar';
 import Contact from '@/components/Contact';
 import Navbar from '@/components/Navbar';
+import WhatsAppButton from '@/components/WhatsAppButton';
 
 
 export default function Home() {
@@ -21,7 +22,7 @@ export default function Home() {
       <Reviews />
       <BookingCalendar />
       <Contact />
-
+      <WhatsAppButton />
     </main>
   );
 }

@@ -7,8 +7,8 @@ export default function Footer() {
             <div className="container mx-auto px-4">
                 {/* Removed detailed columns as per request */}
 
-                <div className="border-t border-white/10 pt-8 text-center text-gray-500 text-sm">
-                    <p>&copy; {new Date().getFullYear()} Sidhi Vinayak events. All rights reserved.</p>
+                <div className="border-t border-white/10 pt-8 text-center text-gray-400 text-sm pb-8 md:pb-0">
+                    <p>&copy; {new Date().getFullYear()} Sidhi Vinayak Events. All rights reserved.</p>
                     <Link href="/admin" className="text-xs text-gray-700 hover:text-gray-500 mt-2 inline-block">Admin Login</Link>
                 </div>
             </div>

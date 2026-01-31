@@ -12,6 +12,8 @@ const images = [
     '/assets/WhatsApp Image 2026-01-30 at 9.54.06 PM.jpeg',
     '/assets/WhatsApp Image 2026-01-30 at 9.54.36 PM.jpeg',
     '/assets/WhatsApp Image 2026-01-30 at 9.54.37 PM.jpeg',
+    '/assets/c1.jfif', // Cinematic
+    '/assets/v1.jfif', // Vermala
 ];
 
 const videos = [
@@ -65,7 +67,7 @@ export default function Gallery() {
                                 }
                             }
                         }}
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
                     >
                         {images.map((src, index) => (
                             <motion.div

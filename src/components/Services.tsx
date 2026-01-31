@@ -8,65 +8,97 @@ const services = [
         name: 'Full Wedding Shoots',
         icon: Heart,
         description: 'Complete coverage of your big day, capturing every emotion.',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS62SPEPEZzG2G2lRlKBS1rFG5aTJAL8VX8JA&s'
+        image: '/assets/wedding_1.png',
+        images: [
+            '/assets/wedding_1.png',
+            '/assets/wedding_2.png',
+            '/assets/wedding_3.png',
+            '/assets/wedding_4.png',
+            '/assets/wedding_5.png'
+        ]
     },
     {
         name: 'Pre-Wedding Shoots',
         icon: Camera,
         description: 'Romantic and artistic shoots before the wedding bells ring.',
-        image: 'https://images.unsplash.com/photo-1621621667797-e06afc217fb0?q=80&w=800&auto=format&fit=crop'
+        image: '/assets/prewedding_1.png',
+        images: [
+            '/assets/prewedding_1.png',
+            '/assets/prewedding_2.png',
+            '/assets/prewedding_3.png',
+            '/assets/prewedding_4.png',
+            '/assets/prewedding_5.png'
+        ]
     },
     {
         name: 'Cinematic Photography',
         icon: Video,
         description: 'Movie-like quality for your most precious memories.',
-        image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=800&auto=format&fit=crop'
+        image: '/assets/c1.jfif',
+        images: [
+            '/assets/c1.jfif',
+            '/assets/c2.jfif',
+            '/assets/c3.jfif',
+            '/assets/c4.jfif',
+            '/assets/c5.jfif',
+            '/assets/c6.jfif'
+        ]
     },
     {
         name: 'Bride Entry',
         icon: Star,
         description: 'Special focus on the grand entry of the bride.',
-        image: 'https://img.weddingbazaar.com/photos/pictures/000/497/533/new_medium/Copy_of_RSWedding79.jpg?1535095586'
+        image: '/assets/b1.jfif',
+        images: ['/assets/b1.jfif', '/assets/b2.jfif', '/assets/b3.jfif', '/assets/b4.jfif', '/assets/b5.jfif', '/assets/b6.jfif']
     },
     {
         name: 'Vermala',
         icon: Heart,
         description: 'Capturing the beautiful moment of garland exchange.',
-        image: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=800&auto=format&fit=crop'
+        image: '/assets/v1.jfif',
+        images: ['/assets/v1.jfif', '/assets/v2.jfif', '/assets/v3.jfif', '/assets/v4.jfif', '/assets/v5.jfif', '/assets/v6.jfif']
     },
     {
-        name: 'Maternity Shoots',
+        name: 'Baby Shower Shoots',
         icon: Baby,
         description: 'Celebrating the journey of motherhood with elegance.',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHnAQkSn52B0AZ-iRiNtXeklc1PTd3iH5OMw&s'
+        image: '/assets/s1.jfif',
+        images: ['/assets/s1.jfif', '/assets/s2.jfif', '/assets/s3.jfif', '/assets/s4.jfif', '/assets/s5.jfif', '/assets/s6.jfif']
     },
     {
         name: 'Birthday Parties',
         icon: Gift,
         description: 'Fun and vibrant photography for birthday celebrations.',
-        image: 'https://images.unsplash.com/photo-1558636508-e0db3814bd1d?q=80&w=800&auto=format&fit=crop'
+        image: '/assets/p1.jfif',
+        images: ['/assets/p1.jfif', '/assets/p2.jfif', '/assets/p3.jfif', '/assets/p4.jfif', '/assets/p5.jfif', '/assets/p6.jfif']
     },
     {
         name: 'House Opening Shoots',
         icon: Home,
         description: 'Documenting the joy of your new beginning (Griha Pravesh).',
-        image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop'
+        image: '/assets/h1.jfif',
+        images: ['/assets/h1.jfif', '/assets/h2.jfif', '/assets/h3.jfif', '/assets/h4.jfif', '/assets/h5.jfif', '/assets/h6.jfif']
     },
     {
-        name: 'Product Shoots',
+        name: 'Drone Coverage',
         icon: Zap,
-        description: 'Professional photography to showcase your products.',
-        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop'
-    },
-    {
-        name: 'Drone Cinematography',
-        icon: Aperture,
-        description: 'Stunning aerial views and 4K drone shots for your events.',
-        image: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?q=80&w=800&auto=format&fit=crop'
+        description: 'Spectacular aerial views of your venue and events.',
+        image: '/assets/d1.jfif',
+        images: ['/assets/d1.jfif', '/assets/d2.jfif', '/assets/d3.jfif', '/assets/d4.jfif', '/assets/d5.jfif', '/assets/d6.jfif']
     },
 ];
 
+import { useState } from 'react';
+import ServiceModal from './ServiceModal';
+
 export default function Services() {
+    const [selectedService, setSelectedService] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleServiceClick = (service: any) => {
+        setSelectedService(service);
+        setIsModalOpen(true);
+    };
     return (
         <section id="services" className="py-24 bg-zinc-950 text-white relative overflow-hidden">
             {/* Background Elements */}
@@ -107,6 +139,7 @@ export default function Services() {
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
                             }}
                             whileHover={{ y: -10 }}
+                            onClick={() => handleServiceClick(service)}
                             className="group relative h-80 rounded-2xl overflow-hidden cursor-pointer shadow-xl"
                         >
                             {/* Background Image */}
@@ -116,7 +149,8 @@ export default function Services() {
                                     alt={service.name}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
-                                <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-500" />
+                                {/* Bottom Gradient for Text Readability */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500" />
                             </div>
 
                             {/* Content */}
@@ -137,6 +171,13 @@ export default function Services() {
                     ))}
                 </motion.div>
             </div>
+
+            {/* Modal */}
+            <ServiceModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                service={selectedService}
+            />
         </section>
     );
 }

@@ -15,13 +15,32 @@ export default function Hero() {
                 playsInline
                 className="absolute top-0 left-0 w-full h-full object-cover z-0"
             >
-                <source src="/assets/WhatsApp Video 2026-01-30 at 10.17.29 PM.mp4" type="video/mp4" />
+                <source src="/assets/background.mp4" type="video/mp4" />
                 {/* Fallback if video fails to load or for different screen sizes if needed */}
                 <div className="absolute inset-0 bg-black/80" />
             </video>
 
             {/* Overlay */}
             <div className="absolute inset-0 bg-black/50 z-10" />
+
+            {/* Background Marquee Text */}
+            <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden opacity-10 pointer-events-none select-none">
+                <motion.div
+                    className="whitespace-nowrap flex text-[20vh] md:text-[30vh] font-bold font-heading text-white/20"
+                    animate={{ x: [0, -1000] }} // specific value might be needed or use percentage if width is known, but simplistic loop works for now. Better to use percentage with repeat.
+                    transition={{
+                        repeat: Infinity,
+                        duration: 30,
+                        ease: "linear"
+                    }}
+                    style={{ x: 0 }}
+                >
+                    <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                    <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                    <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                    <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                </motion.div>
+            </div>
 
             {/* Content */}
             <div className="relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
@@ -39,9 +58,9 @@ export default function Hero() {
                     initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
                     animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                     transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
-                    className="text-4xl md:text-6xl lg:text-8xl font-bold font-heading text-white mb-6 uppercase drop-shadow-2xl"
+                    className="text-4xl md:text-6xl lg:text-8xl font-bold font-heading mb-6 uppercase drop-shadow-2xl"
                 >
-                    Sidhi Vinayak <br className="hidden md:block" /> events
+                    <span className="text-gradient-gold">Sidhi Vinayak</span> <br className="hidden md:block" /> <span className="text-white">events</span>
                 </motion.h1>
 
                 <motion.p
