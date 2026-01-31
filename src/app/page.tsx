@@ -4,8 +4,9 @@ import Gallery from '@/components/Gallery';
 import Team from '@/components/Team';
 import Reviews from '@/components/Reviews';
 import BookingCalendar from '@/components/BookingCalendar';
+import Contact from '@/components/Contact';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+
 
 export default function Home() {
   return (
@@ -17,7 +18,8 @@ export default function Home() {
       <Team />
       <Reviews />
       <BookingCalendar />
-      <Footer />
+      <Contact />
+
     </main>
   );
 }

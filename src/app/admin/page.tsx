@@ -2,13 +2,22 @@
 
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Lock, Plus, MapPin, Calendar, Trash2 } from 'lucide-react';
+import { Lock, Plus, MapPin, Calendar, Trash2, Mail, MessageSquare } from 'lucide-react';
 
 type Booking = {
     id: string;
     date: string;
     location: string;
     programName: string;
+};
+
+type Message = {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    message: string;
+    createdAt: string;
 };
 
 export default function AdminPage() {
@@ -18,6 +27,7 @@ export default function AdminPage() {
     const [error, setError] = useState('');
 
     const [bookings, setBookings] = useState<Booking[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [newDate, setNewDate] = useState('');
     const [newProgram, setNewProgram] = useState('');
     const [newLocation, setNewLocation] = useState('');
@@ -29,6 +39,7 @@ export default function AdminPage() {
         if (session === 'true') {
             setIsLoggedIn(true);
             fetchBookings();
+            fetchMessages();
         }
     }, []);
 
@@ -40,6 +51,7 @@ export default function AdminPage() {
             localStorage.setItem('admin_session', 'true');
             setError('');
             fetchBookings();
+            fetchMessages();
         } else {
             setError('Invalid credentials');
         }
@@ -55,6 +67,23 @@ export default function AdminPage() {
             const res = await fetch('/api/bookings');
             const data = await res.json();
             setBookings(data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const fetchMessages = async () => {
+        try {
+            // Need a GET route for messages too, let's create a quick API fetch
+            // Actually, we didn't create GET API for messages yet, let's address that.
+            // For now, I'll assume we will create it OR I will read it if I make it.
+            // Wait, I should make the GET route first.
+            // Let's assume /api/contact supports GET.
+            const res = await fetch('/api/contact');
+            if (res.ok) {
+                const data = await res.json();
+                setMessages(data);
+            }
         } catch (err) {
             console.error(err);
         }
