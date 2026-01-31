@@ -49,7 +49,7 @@ export default function Team() {
                             transition={{ duration: 0.6 }}
                             className="bg-zinc-900 rounded-2xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all group"
                         >
-                            <div className="h-96 overflow-hidden relative">
+                            <div className="h-72 overflow-hidden relative">
                                 <img
                                     src={member.image}
                                     alt={member.name}
@@ -57,12 +57,12 @@ export default function Team() {
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent opacity-80" />
                                 <div className="absolute bottom-4 left-4">
-                                    <h4 className="text-2xl font-bold text-white font-heading">{member.name}</h4>
-                                    <p className="text-primary">{member.role}</p>
+                                    <h4 className="text-xl font-bold text-white font-heading">{member.name}</h4>
+                                    <p className="text-primary text-sm">{member.role}</p>
                                 </div>
                             </div>
-                            <div className="p-6 flex items-center justify-between">
-                                <a href={`tel:${member.phone.replace(/ /g, '')}`} className="flex items-center gap-2 text-gray-300 hover:text-primary transition-colors">
+                            <div className="p-4 flex items-center justify-between">
+                                <a href={`tel:${member.phone.replace(/ /g, '')}`} className="flex items-center gap-2 text-gray-300 hover:text-primary transition-colors text-sm">
                                     <Phone className="w-5 h-5" />
                                     <span>{member.phone}</span>
                                 </a>

@@ -31,8 +31,10 @@ export default function Navbar() {
                 }`}
         >
             <div className="container mx-auto px-4 flex justify-between items-center">
-                <Link href="/" className="text-xl md:text-2xl font-bold flex items-center gap-2 text-primary font-heading">
-                    <Camera className="w-8 h-8" />
+                <Link href="/" className="text-xl md:text-2xl font-bold flex items-center gap-3 text-primary font-heading">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/50">
+                        <img src="/logo.jpg" alt="Sidhi Vinayak Events" className="w-full h-full object-cover" />
+                    </div>
                     <span>Sidhi Vinayak events</span>
                 </Link>
 

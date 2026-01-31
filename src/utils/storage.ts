@@ -95,8 +95,13 @@ export const saveReview = (review: Omit<Review, 'id' | 'createdAt'>): Review => 
         createdAt: new Date().toISOString()
     };
     reviews.push(newReview);
-    ensureDirectoryExistence(reviewsFilePath);
-    fs.writeFileSync(reviewsFilePath, JSON.stringify(reviews, null, 2));
+    reviews.push(newReview);
+    try {
+        ensureDirectoryExistence(reviewsFilePath);
+        fs.writeFileSync(reviewsFilePath, JSON.stringify(reviews, null, 2));
+    } catch (e) {
+        console.warn("Could not save review, likely read-only env:", e);
+    }
     return newReview;
 };
 
@@ -123,8 +128,12 @@ export const saveMessage = (msg: Omit<Message, 'id' | 'createdAt'>): Message => 
         createdAt: new Date().toISOString()
     };
     messages.push(newMessage);
-    ensureDirectoryExistence(messagesFilePath);
-    fs.writeFileSync(messagesFilePath, JSON.stringify(messages, null, 2));
+    try {
+        ensureDirectoryExistence(messagesFilePath);
+        fs.writeFileSync(messagesFilePath, JSON.stringify(messages, null, 2));
+    } catch (e) {
+        console.warn("Could not save message, likely read-only env:", e);
+    }
     return newMessage;
 };
 
@@ -153,11 +162,14 @@ export const saveBooking = (booking: Omit<Booking, 'id' | 'createdAt'>): Booking
     };
 
     // Check if slot overlaps? (Optional, but good to have)
-    // For now, simpliest "append".
     bookings.push(newBooking);
 
-    ensureDirectoryExistence(bookingsFilePath);
-    fs.writeFileSync(bookingsFilePath, JSON.stringify(bookings, null, 2));
+    try {
+        ensureDirectoryExistence(bookingsFilePath);
+        fs.writeFileSync(bookingsFilePath, JSON.stringify(bookings, null, 2));
+    } catch (e) {
+        console.warn("Could not save booking, likely read-only env:", e);
+    }
 
     return newBooking;
 };
