@@ -1,10 +1,14 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 
-// Define the file path. In production (Vercel), this won't persist, but works for local.
-const bookingsFilePath = path.join(process.cwd(), 'src', 'data', 'bookings.json');
-const messagesFilePath = path.join(process.cwd(), 'src', 'data', 'messages.json');
-const reviewsFilePath = path.join(process.cwd(), 'src', 'data', 'reviews.json');
+// Determine the writeable directory (tmp for Vercel/Production, local for dev)
+// Vercel only allows writing to /tmp
+const DATA_DIR = process.env.NODE_ENV === 'production' ? os.tmpdir() : path.join(process.cwd(), 'src', 'data');
+
+const bookingsFilePath = path.join(DATA_DIR, 'bookings.json');
+const messagesFilePath = path.join(DATA_DIR, 'messages.json');
+const reviewsFilePath = path.join(DATA_DIR, 'reviews.json');
 
 export type Booking = {
     id: string;
