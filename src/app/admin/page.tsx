@@ -202,7 +202,7 @@ export default function AdminPage() {
     };
 
     // Derived State
-    const filteredBookings = bookings.filter(b => b.status === activeTab);
+    const filteredBookings = bookings.filter(b => (b.status || 'upcoming') === activeTab);
     const totalRevenue = bookings.reduce((sum, b) => sum + (b.totalAmount || 0), 0);
     const totalPending = bookings.reduce((sum, b) => sum + ((b.totalAmount || 0) - (b.receivedAmount || 0)), 0);
 
@@ -585,7 +585,21 @@ export default function AdminPage() {
                         })
                     )}
                 </div>
-            </main>
         </div>
+                
+                {/* DEBUG SECTION - REMOVE LATER */ }
+    <div className="mt-12 p-4 bg-zinc-900 border border-red-500/30 rounded-lg">
+        <h3 className="text-red-400 font-bold mb-2">Debug Data (Check why events are hidden)</h3>
+        <pre className="text-xs text-gray-400 overflow-auto max-h-60 bg-black p-4 rounded">
+            {JSON.stringify({
+                total: bookings.length,
+                activeTab,
+                firstBooking: bookings[0],
+                allBookings: bookings
+            }, null, 2)}
+        </pre>
+    </div>
+            </main >
+        </div >
     );
 }
