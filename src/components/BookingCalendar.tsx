@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday, addMonths, subMonths } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Phone } from 'lucide-react';
@@ -9,6 +9,7 @@ type Booking = {
     date: string; // ISO string or 'YYYY-MM-DD'
     location: string;
     programName: string;
+    status?: 'upcoming' | 'completed';
 };
 
 export default function BookingCalendar() {
@@ -16,16 +17,27 @@ export default function BookingCalendar() {
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [loading, setLoading] = useState(true);
+    const detailsRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         fetchBookings();
     }, []);
 
+    // Scroll to details on date select (Mobile UX)
+    useEffect(() => {
+        if (selectedDate && window.innerWidth < 1024 && detailsRef.current) {
+            setTimeout(() => {
+                detailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    }, [selectedDate]);
+
     const fetchBookings = async () => {
         try {
-            const res = await fetch('/api/bookings');
+            const res = await fetch('/api/bookings', { cache: 'no-store' });
             if (res.ok) {
                 const data = await res.json();
+                console.log("Fetched bookings:", data);
                 setBookings(data);
             }
         } catch (error) {
@@ -43,9 +55,10 @@ export default function BookingCalendar() {
         end: endOfMonth(currentDate),
     });
 
-    // Check if a date is booked
+    // Check if a date is booked (and not completed)
     const getBookingForDate = (date: Date) => {
-        return bookings.find(b => isSameDay(new Date(b.date), date));
+        const dateStr = format(date, 'yyyy-MM-dd');
+        return bookings.find(b => b.date === dateStr && b.status !== 'completed');
     };
 
     const handleDateClick = (date: Date) => {
@@ -152,7 +165,7 @@ export default function BookingCalendar() {
                     </div>
 
                     {/* Details Panel */}
-                    <div className="w-full lg:w-1/3 min-h-[400px]">
+                    <div ref={detailsRef} className="w-full lg:w-1/3 min-h-[400px]">
                         <AnimatePresence mode="wait">
                             {selectedDate ? (
                                 <motion.div

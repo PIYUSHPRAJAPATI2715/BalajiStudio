@@ -7,10 +7,15 @@ const messagesFilePath = path.join(process.cwd(), 'src', 'data', 'messages.json'
 const reviewsFilePath = path.join(process.cwd(), 'src', 'data', 'reviews.json');
 
 export type Booking = {
-    id: string; // unique ID
-    date: string; // ISO date string
+    id: string;
+    date: string;
     location: string;
-    programName: string;
+    programName: string; // Keeps backward compatibility, can treat as "Event Description"
+    clientName: string;
+    eventType: string;
+    totalAmount: number;
+    receivedAmount: number;
+    status: 'upcoming' | 'completed';
     createdAt: string;
 };
 
@@ -95,7 +100,6 @@ export const saveReview = (review: Omit<Review, 'id' | 'createdAt'>): Review => 
         createdAt: new Date().toISOString()
     };
     reviews.push(newReview);
-    reviews.push(newReview);
     try {
         ensureDirectoryExistence(reviewsFilePath);
         fs.writeFileSync(reviewsFilePath, JSON.stringify(reviews, null, 2));
@@ -146,22 +150,30 @@ export const getBookings = (): Booking[] => {
             return [];
         }
         const fileContent = fs.readFileSync(bookingsFilePath, 'utf-8');
-        return JSON.parse(fileContent);
+        const bookings = JSON.parse(fileContent);
+        // Migration support for old data without new fields
+        return bookings.map((b: any) => ({
+            ...b,
+            clientName: b.clientName || 'Unknown Client',
+            eventType: b.eventType || 'Other',
+            totalAmount: b.totalAmount || 0,
+            receivedAmount: b.receivedAmount || 0,
+            status: b.status || 'upcoming'
+        }));
     } catch (error) {
         console.error("Error reading bookings:", error);
         return [];
     }
 };
 
-export const saveBooking = (booking: Omit<Booking, 'id' | 'createdAt'>): Booking => {
+export const saveBooking = (bookingData: Omit<Booking, 'id' | 'createdAt'>): Booking => {
     const bookings = getBookings();
     const newBooking: Booking = {
-        ...booking,
+        ...bookingData,
         id: Math.random().toString(36).substr(2, 9),
         createdAt: new Date().toISOString()
     };
 
-    // Check if slot overlaps? (Optional, but good to have)
     bookings.push(newBooking);
 
     try {
@@ -172,4 +184,23 @@ export const saveBooking = (booking: Omit<Booking, 'id' | 'createdAt'>): Booking
     }
 
     return newBooking;
+};
+
+export const updateBooking = (id: string, updates: Partial<Booking>): Booking | null => {
+    const bookings = getBookings();
+    const index = bookings.findIndex(b => b.id === id);
+
+    if (index === -1) return null;
+
+    const updatedBooking = { ...bookings[index], ...updates };
+    bookings[index] = updatedBooking;
+
+    try {
+        ensureDirectoryExistence(bookingsFilePath);
+        fs.writeFileSync(bookingsFilePath, JSON.stringify(bookings, null, 2));
+    } catch (e) {
+        console.warn("Could not update booking:", e);
+    }
+
+    return updatedBooking;
 };

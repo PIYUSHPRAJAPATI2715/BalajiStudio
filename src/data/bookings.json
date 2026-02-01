@@ -4,13 +4,47 @@
     "programName": "Pre-wedding",
     "location": "jaipur",
     "id": "vn1wkngwp",
-    "createdAt": "2026-01-31T17:35:33.317Z"
+    "createdAt": "2026-01-31T17:35:33.317Z",
+    "clientName": "Unknown Client",
+    "eventType": "Other",
+    "totalAmount": 0,
+    "receivedAmount": 0,
+    "status": "completed"
   },
   {
     "date": "2026-02-02",
     "programName": "wedding",
     "location": "jaipur",
     "id": "32kggtnj8",
-    "createdAt": "2026-01-31T17:35:58.785Z"
+    "createdAt": "2026-01-31T17:35:58.785Z",
+    "clientName": "Unknown Client",
+    "eventType": "Other",
+    "totalAmount": 0,
+    "receivedAmount": 0,
+    "status": "completed"
+  },
+  {
+    "date": "2026-03-03",
+    "programName": "Bride entry",
+    "location": "benad road",
+    "clientName": "raju",
+    "eventType": "Bride entry",
+    "totalAmount": 10000,
+    "receivedAmount": 2000,
+    "status": "completed",
+    "id": "ekv5pmcrz",
+    "createdAt": "2026-02-01T05:37:13.840Z"
+  },
+  {
+    "date": "2006-05-06",
+    "programName": "reagres",
+    "location": "Government Hospital,Shahpu, NH130A, Dharamjaigarh, Udaipur (Dharamjaigarh) Tahsil, रायगढ़, Chhattisgarh, 496116, India",
+    "clientName": "sdtgst",
+    "eventType": "Pre wedding",
+    "totalAmount": 100000,
+    "receivedAmount": 20000,
+    "status": "completed",
+    "id": "cm2hy5l3m",
+    "createdAt": "2026-02-01T05:41:41.737Z"
   }
 ]
