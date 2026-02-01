@@ -32,7 +32,7 @@ export default function Team() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: true, amount: 0.1 }}
                     className="text-center mb-16"
                 >
                     <h2 className="text-primary font-medium tracking-wider uppercase mb-2">The Team</h2>
@@ -45,7 +45,7 @@ export default function Team() {
                             key={index}
                             initial={{ opacity: 0, x: index === 0 ? -50 : 50 }}
                             whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
+                            viewport={{ once: true, amount: 0.1 }}
                             transition={{ duration: 0.6 }}
                             className="bg-zinc-900 rounded-2xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all group"
                         >

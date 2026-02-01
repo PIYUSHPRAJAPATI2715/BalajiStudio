@@ -60,7 +60,7 @@ export default function Contact() {
     };
 
     return (
-        <section className="py-12 md:py-20 bg-zinc-950 text-white" id="contact-form">
+        <section className="py-12 md:py-20 bg-zinc-950 text-white" id="contact">
             <div className="container mx-auto px-4">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

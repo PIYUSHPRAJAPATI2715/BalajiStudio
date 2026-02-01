@@ -30,7 +30,7 @@ export default function Gallery() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: true, amount: 0.1 }}
                     className="text-center mb-12"
                 >
                     <h2 className="text-primary font-medium tracking-wider uppercase mb-2">Portfolio</h2>
@@ -58,7 +58,7 @@ export default function Gallery() {
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
-                        viewport={{ once: true }}
+                        viewport={{ once: true, amount: 0.1 }}
                         variants={{
                             hidden: {},
                             visible: {
@@ -101,7 +101,7 @@ export default function Gallery() {
                                 key={index}
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
+                                viewport={{ once: true, amount: 0.1 }}
                                 className="rounded-xl overflow-hidden bg-zinc-900"
                             >
                                 <video

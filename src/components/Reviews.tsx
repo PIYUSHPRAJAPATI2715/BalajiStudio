@@ -19,6 +19,7 @@ export default function Reviews() {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [showAllReviews, setShowAllReviews] = useState(false);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -187,7 +188,7 @@ export default function Reviews() {
                         <Loader2 className="w-10 h-10 text-primary animate-spin" />
                     </div>
                 ) : (
-                    <div className="relative overflow-hidden w-full">
+                    <div className="hidden md:block relative overflow-hidden w-full">
                         {/* Gradient Masks */}
                         <div className="absolute left-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-r from-zinc-900 to-transparent pointer-events-none"></div>
                         <div className="absolute right-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-l from-zinc-900 to-transparent pointer-events-none"></div>
@@ -200,7 +201,7 @@ export default function Reviews() {
                                 ease: "linear",
                                 duration: Math.max(20, reviews.length * 5) // Dynamic speed
                             }}
-                            whileHover={{ animationPlayState: "paused" }} // Optional: pause on hover if using CSS animation, for framer motion we need more complex control to pause, but let's stick to simple scroll for now. Actually, Framer Motion doesn't support 'pause' easily on hover without useAnimation controls. Let's keep it simple auto scroll first.
+                            whileHover={{ animationPlayState: "paused" }}
                         >
                             {/* Duplicate reviews for seamless loop */}
                             {[...reviews, ...reviews].map((review, index) => (
@@ -244,6 +245,118 @@ export default function Reviews() {
                         </motion.div>
                     </div>
                 )}
+
+                {/* Mobile View: Vertical List */}
+                {!loading && (
+                    <div className="md:hidden flex flex-col gap-4 mt-8">
+                        {reviews.slice(0, 3).map((review) => (
+                            <div
+                                key={review.id}
+                                className="bg-zinc-800/50 p-6 rounded-2xl border border-white/5 hover:border-primary/30 transition-all duration-300 flex flex-col"
+                            >
+                                <div className="flex items-center gap-1 mb-4">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star
+                                            key={i}
+                                            className={`w-4 h-4 ${i < review.rating ? 'text-yellow-500 fill-yellow-500' : 'text-gray-600'}`}
+                                        />
+                                    ))}
+                                </div>
+
+                                <div className="mb-4 relative flex-grow">
+                                    <Quote className="w-8 h-8 text-primary/20 absolute -top-2 -left-2" />
+                                    <p className="text-gray-300 relative z-10 pl-6 italic line-clamp-3 text-sm">
+                                        "{review.text}"
+                                    </p>
+                                </div>
+
+                                <div className="flex items-center gap-3 mt-auto pt-4 border-t border-white/5">
+                                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20 bg-zinc-700 flex-shrink-0">
+                                        {review.image ? (
+                                            <img src={review.image} alt={review.name} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-lg font-bold text-gray-400">
+                                                {review.name.charAt(0)}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-white text-sm truncate w-32">{review.name}</h4>
+                                        <p className="text-primary text-xs truncate w-32">{review.event}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        {reviews.length > 3 && (
+                            <button
+                                onClick={() => setShowAllReviews(true)}
+                                className="w-full bg-zinc-800 text-white py-3 rounded-xl border border-white/10 font-bold hover:bg-zinc-700 transition-colors"
+                            >
+                                View All Reviews
+                            </button>
+                        )}
+                    </div>
+                )}
+
+                {/* View All Reviews Modal */}
+                <AnimatePresence>
+                    {showAllReviews && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/90 z-50 flex flex-col p-4 overflow-y-auto"
+                        >
+                            <div className="flex justify-between items-center mb-6 sticky top-0 bg-black/90 py-4 z-10 border-b border-white/10">
+                                <h3 className="text-2xl font-bold text-primary font-heading">All Reviews</h3>
+                                <button
+                                    onClick={() => setShowAllReviews(false)}
+                                    className="text-gray-400 hover:text-white bg-zinc-800 p-2 rounded-full"
+                                >
+                                    <X className="w-6 h-6" />
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-4 pb-20">
+                                {reviews.map((review) => (
+                                    <div
+                                        key={review.id}
+                                        className="bg-zinc-900 border border-white/10 p-6 rounded-xl"
+                                    >
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20 bg-zinc-800 flex-shrink-0">
+                                                    {review.image ? (
+                                                        <img src={review.image} alt={review.name} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-lg font-bold text-gray-400">
+                                                            {review.name.charAt(0)}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-bold text-white">{review.name}</h4>
+                                                    <p className="text-xs text-primary">{review.event}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-1">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <Star
+                                                        key={i}
+                                                        className={`w-4 h-4 ${i < review.rating ? 'text-yellow-500 fill-yellow-500' : 'text-gray-600'}`}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <p className="text-gray-300 text-sm leading-relaxed">
+                                            "{review.text}"
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </section>
     );

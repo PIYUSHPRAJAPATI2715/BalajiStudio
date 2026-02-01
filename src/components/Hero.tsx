@@ -55,7 +55,7 @@ export default function Hero() {
                 </motion.div>
 
                 <motion.h1
-                    initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
+                    initial={{ opacity: 0, scale: 0.9, filter: "blur(5px)" }}
                     animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                     transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
                     className="text-4xl md:text-6xl lg:text-8xl font-bold font-heading mb-6 uppercase drop-shadow-2xl"

@@ -12,7 +12,7 @@ export default function About() {
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, margin: "-100px" }}
+                        viewport={{ once: true, amount: 0.1 }}
                         transition={{ duration: 0.8 }}
                         className="w-full md:w-1/2 relative"
                     >
@@ -35,7 +35,7 @@ export default function About() {
                     <motion.div
                         initial={{ opacity: 0, x: 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, margin: "-100px" }}
+                        viewport={{ once: true, amount: 0.1 }}
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="w-full md:w-1/2"
                     >
@@ -48,18 +48,18 @@ export default function About() {
                             From the subtle glances to the grand celebrations, our team is dedicated to capturing every emotion and detail. We believe in storytelling through our lens and creating an ambiance that leaves a lasting impression.
                         </p>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                            <div className="flex flex-col gap-2">
+                        <div className="grid grid-cols-3 gap-2 md:gap-6">
+                            <div className="flex flex-col gap-1 items-center md:items-start text-center md:text-left">
                                 <Camera className="w-8 h-8 text-primary" />
                                 <span className="font-bold text-xl">5+ Years</span>
                                 <span className="text-sm text-gray-500">Experience</span>
                             </div>
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-1 items-center md:items-start text-center md:text-left">
                                 <Heart className="w-8 h-8 text-primary" />
                                 <span className="font-bold text-xl">200+</span>
                                 <span className="text-sm text-gray-500">Happy Couples</span>
                             </div>
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-1 items-center md:items-start text-center md:text-left">
                                 <Award className="w-8 h-8 text-primary" />
                                 <span className="font-bold text-xl">100%</span>
                                 <span className="text-sm text-gray-500">Commitment</span>
