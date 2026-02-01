@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getBookings, saveBooking, updateBooking } from '@/utils/storage';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     const bookings = getBookings();
     return NextResponse.json(bookings);
