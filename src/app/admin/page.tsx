@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Lock, Plus, MapPin, Calendar, Trash2, Mail, DollarSign, CheckCircle, Clock, User, Filter } from 'lucide-react';
 
 type Booking = {
@@ -109,8 +109,7 @@ export default function AdminPage() {
         try {
             const res = await fetch('/api/bookings', { cache: 'no-store' });
             const data = await res.json();
-            // Sort by date
-            data.sort((a: Booking, b: Booking) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            // Sorting done in render
             setBookings(data);
         } catch (err) {
             console.error(err);
@@ -202,9 +201,19 @@ export default function AdminPage() {
     };
 
     // Derived State
-    const filteredBookings = bookings.filter(b => (b.status || 'upcoming') === activeTab);
+    const filteredBookings = bookings.filter(b => {
+        const s = (b.status || 'upcoming').toLowerCase().trim();
+        return s === activeTab;
+    });
     const totalRevenue = bookings.reduce((sum, b) => sum + (b.totalAmount || 0), 0);
     const totalPending = bookings.reduce((sum, b) => sum + ((b.totalAmount || 0) - (b.receivedAmount || 0)), 0);
+
+    // Safe Sort
+    filteredBookings.sort((a, b) => {
+        const dateA = a.date ? parseISO(a.date).getTime() : 0;
+        const dateB = b.date ? parseISO(b.date).getTime() : 0;
+        return dateA - dateB;
+    });
 
     if (!isLoggedIn) {
         return (
@@ -515,9 +524,9 @@ export default function AdminPage() {
                                         {/* Date & Type */}
                                         <div className="flex flex-row lg:flex-col items-center lg:items-start gap-4 lg:gap-2">
                                             <div className="bg-zinc-800 p-3 rounded-lg text-center min-w-[80px]">
-                                                <div className="text-xs text-gray-400 uppercase">{booking.date ? format(new Date(booking.date), 'MMM') : 'NDA'}</div>
-                                                <div className="text-2xl font-bold text-white">{booking.date ? format(new Date(booking.date), 'dd') : 'No'}</div>
-                                                <div className="text-xs text-gray-400">{booking.date ? format(new Date(booking.date), 'yyyy') : 'Date'}</div>
+                                                <div className="text-xs text-gray-400 uppercase">{booking.date ? format(parseISO(booking.date), 'MMM') : 'NDA'}</div>
+                                                <div className="text-2xl font-bold text-white">{booking.date ? format(parseISO(booking.date), 'dd') : 'No'}</div>
+                                                <div className="text-xs text-gray-400">{booking.date ? format(parseISO(booking.date), 'yyyy') : 'Date'}</div>
                                             </div>
                                             <div>
                                                 <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20 mb-2">
@@ -525,7 +534,7 @@ export default function AdminPage() {
                                                 </span>
                                                 <div className="flex items-center gap-2 text-gray-400 text-sm">
                                                     <Clock className="w-3 h-3" />
-                                                    {booking.date ? format(new Date(booking.date), 'EEEE') : ''}
+                                                    {booking.date ? format(parseISO(booking.date), 'EEEE') : ''}
                                                 </div>
                                             </div>
                                         </div>
@@ -586,19 +595,6 @@ export default function AdminPage() {
                     )}
                 </div>
         </div>
-                
-                {/* DEBUG SECTION - REMOVE LATER */ }
-    <div className="mt-12 p-4 bg-zinc-900 border border-red-500/30 rounded-lg">
-        <h3 className="text-red-400 font-bold mb-2">Debug Data (Check why events are hidden)</h3>
-        <pre className="text-xs text-gray-400 overflow-auto max-h-60 bg-black p-4 rounded">
-            {JSON.stringify({
-                total: bookings.length,
-                activeTab,
-                firstBooking: bookings[0],
-                allBookings: bookings
-            }, null, 2)}
-        </pre>
-    </div>
             </main >
         </div >
     );
