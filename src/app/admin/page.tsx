@@ -107,7 +107,7 @@ export default function AdminPage() {
 
     const fetchBookings = async () => {
         try {
-            const res = await fetch('/api/bookings');
+            const res = await fetch('/api/bookings', { cache: 'no-store' });
             const data = await res.json();
             // Sort by date
             data.sort((a: Booking, b: Booking) => new Date(a.date).getTime() - new Date(b.date).getTime());
