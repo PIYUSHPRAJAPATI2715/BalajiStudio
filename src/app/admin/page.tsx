@@ -594,8 +594,8 @@ export default function AdminPage() {
                         })
                     )}
                 </div>
+            </main>
         </div>
-            </main >
-        </div >
     );
 }
+```
