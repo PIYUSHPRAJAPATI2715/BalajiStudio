@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { format } from 'date-fns';
 import { Lock, Plus, MapPin, Calendar, Trash2, Mail, DollarSign, CheckCircle, Clock, User, Filter } from 'lucide-react';
 
@@ -42,6 +42,20 @@ export default function AdminPage() {
     const [suggestions, setSuggestions] = useState<any[]>([]);
     const [isSearchingLocation, setIsSearchingLocation] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const locationWrapperRef = useRef<HTMLDivElement>(null);
+
+    // Handle click outside to close suggestions
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (locationWrapperRef.current && !locationWrapperRef.current.contains(event.target as Node)) {
+                setShowSuggestions(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     // Form State
     const [showForm, setShowForm] = useState(false);
@@ -55,6 +69,16 @@ export default function AdminPage() {
         receivedAmount: '',
         status: 'upcoming'
     });
+
+    // ... (existing code)
+
+    // In the return JSX, inside the form:
+    // Update inputs to text-base and add ref to location wrapper
+    /* 
+       Note: Since I am replacing a block, I will include the relevant parts of the component.
+       Direct replacement of the return block is safer or targeted chunks.
+       I will target the Location Input Wrapper first to add the Ref.
+    */
 
     useEffect(() => {
         const session = localStorage.getItem('admin_session');
@@ -249,7 +273,7 @@ export default function AdminPage() {
                 </div>
             </header>
 
-            <main className="container mx-auto px-4 py-8">
+            <main className="container mx-auto px-4 py-8 pb-32">
                 {/* Stats Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     <div className="bg-zinc-900 p-6 rounded-xl border border-white/10">
