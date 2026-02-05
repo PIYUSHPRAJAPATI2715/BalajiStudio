@@ -32,8 +32,10 @@ export default function Navbar() {
         >
             <div className="container mx-auto px-4 flex justify-between items-center">
                 <Link href="/" className="text-xl md:text-2xl font-bold flex items-center gap-3 text-primary font-heading">
-                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/50">
-                        <img src="/logo.jpg" alt="Sidhi Vinayak Events" className="w-full h-full object-cover" />
+                    <div className="w-12 h-12 flex items-center justify-center">
+                        <svg width="32" height="32" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary fill-current">
+                            <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" />
+                        </svg>
                     </div>
                     <span>Sidhi Vinayak Events</span>
                 </Link>

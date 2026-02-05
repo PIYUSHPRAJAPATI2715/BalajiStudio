@@ -221,8 +221,10 @@ export default function AdminPage() {
                 <div className="bg-zinc-900 p-8 rounded-2xl border border-white/10 w-full max-w-md relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-2 bg-gradient-gold" />
                     <div className="text-center mb-8">
-                        <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-primary/50">
-                            <img src="/assets/admin_logo.jpg" alt="Logo" className="w-full h-full object-cover" />
+                        <div className="w-24 h-24 mx-auto mb-4 flex items-center justify-center">
+                            <svg width="64" height="64" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary fill-current">
+                                <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" />
+                            </svg>
                         </div>
                         <h1 className="text-2xl font-bold text-white font-heading">Admin Portal</h1>
                         <p className="text-gray-400">Sidhi Vinayak Events</p>
@@ -268,8 +270,10 @@ export default function AdminPage() {
             <header className="bg-zinc-900 border-b border-white/10 sticky top-0 z-50">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full overflow-hidden border border-primary/30">
-                            <img src="/assets/admin_logo.jpg" alt="Logo" className="w-full h-full object-cover" />
+                        <div className="w-10 h-10 flex items-center justify-center">
+                            <svg width="24" height="24" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary fill-current">
+                                <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" />
+                            </svg>
                         </div>
                         <h1 className="text-xl font-bold font-heading hidden md:block">Sidhi Vinayak Admin</h1>
                     </div>

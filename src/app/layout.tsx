@@ -6,8 +6,8 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata: Metadata = {
-  title: "Sidhi Vinayak events",
-  description: "Make your events memorable with Sidhi Vinayak events. specialized in weddings, parties, and corporate events.",
+  title: "Sidhi Vinayak Events",
+  description: "Make your events memorable with Sidhi Vinayak Events. specialized in weddings, parties, and corporate events.",
 };
 
 export default function RootLayout({
