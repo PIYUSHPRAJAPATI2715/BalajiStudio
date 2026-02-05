@@ -8,6 +8,9 @@ const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 export const metadata: Metadata = {
   title: "Sidhi Vinayak Events",
   description: "Make your events memorable with Sidhi Vinayak Events. specialized in weddings, parties, and corporate events.",
+  icons: {
+    icon: "/logo.jpg",
+  },
 };
 
 export default function RootLayout({
