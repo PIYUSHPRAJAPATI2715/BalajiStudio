@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: "Make your events memorable with Sidhi Vinayak Events. specialized in weddings, parties, and corporate events.",
   icons: {
     icon: "/logo.jpg",
+    shortcut: "/logo.jpg",
+    apple: "/logo.jpg",
   },
 };
 
