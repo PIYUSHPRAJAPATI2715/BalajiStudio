@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Camera, Heart, Award } from 'lucide-react';
+import Image from 'next/image';
 
 export default function About() {
     return (
@@ -17,17 +18,35 @@ export default function About() {
                         className="w-full md:w-1/2 relative"
                     >
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            <img src="/assets/wedding_1.png" alt="Wedding" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover" />
-                            <img src="/assets/prewedding_1.png" alt="Pre-Wedding" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover mt-4" />
-                            <img src="/assets/c1.jfif" alt="Cinematic" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover" />
+                            <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
+                                <Image src="/assets/wedding_1.png" alt="Sidhi Vinayak Events - Wedding Photography" fill className="object-cover" />
+                            </div>
+                            <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500 mt-4">
+                                <Image src="/assets/prewedding_1.png" alt="Sidhi Vinayak Events - Pre-Wedding Photography" fill className="object-cover" />
+                            </div>
+                            <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
+                                <Image src="/assets/c1.jfif" alt="Sidhi Vinayak Events - Cinematic Photography" fill className="object-cover" />
+                            </div>
 
-                            <img src="/assets/b1.jfif" alt="Bride Entry" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover" />
-                            <img src="/assets/v1.jfif" alt="Vermala" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover mt-4" />
-                            <img src="/assets/s1.jfif" alt="Maternity" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover" />
+                            <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
+                                <Image src="/assets/b1.jfif" alt="Sidhi Vinayak Events - Bride Entry Photography" fill className="object-cover" />
+                            </div>
+                            <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500 mt-4">
+                                <Image src="/assets/v1.jfif" alt="Sidhi Vinayak Events - Vermala Ceremony Photography" fill className="object-cover" />
+                            </div>
+                            <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
+                                <Image src="/assets/s1.jfif" alt="Sidhi Vinayak Events - Maternity Photography" fill className="object-cover" />
+                            </div>
 
-                            <img src="/assets/p1.jfif" alt="Birthday" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover" />
-                            <img src="/assets/h1.jfif" alt="House Opening" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover mt-4" />
-                            <img src="/assets/d1.jfif" alt="Drone" className="rounded-lg border border-white/5 hover:scale-105 transition-transform duration-500 h-24 w-full object-cover" />
+                            <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
+                                <Image src="/assets/p1.jfif" alt="Sidhi Vinayak Events - Birthday Party Photography" fill className="object-cover" />
+                            </div>
+                            <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500 mt-4">
+                                <Image src="/assets/h1.jfif" alt="Sidhi Vinayak Events - House Opening Photography" fill className="object-cover" />
+                            </div>
+                            <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
+                                <Image src="/assets/d1.jfif" alt="Sidhi Vinayak Events - Drone Photography" fill className="object-cover" />
+                            </div>
                         </div>
                     </motion.div>
 

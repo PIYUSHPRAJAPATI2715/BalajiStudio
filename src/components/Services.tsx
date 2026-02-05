@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Camera, Video, Heart, Home, Gift, Baby, Star, Zap, Aperture } from 'lucide-react';
+import Image from 'next/image';
 
 const services = [
     {
@@ -144,10 +145,11 @@ export default function Services() {
                         >
                             {/* Background Image */}
                             <div className="absolute inset-0">
-                                <img
+                                <Image
                                     src={service.image}
                                     alt={service.name}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    fill
+                                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
                                 {/* Bottom Gradient for Text Readability */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500" />

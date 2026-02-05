@@ -79,13 +79,13 @@ export default function Gallery() {
                                 whileHover={{ scale: 1.05, zIndex: 10 }}
                                 className="relative aspect-[3/4] group overflow-hidden rounded-lg cursor-pointer"
                             >
-                                {/* Note: Using standard img for local files without known dimensions, or Next.js Image with fill if we disable optimization/configure it */}
-                                <div className="w-full h-full bg-zinc-900">
-                                    <img
+                                {/* Note: Using Next.js Image with fill for optimization */}
+                                <div className="w-full h-full bg-zinc-900 border border-white/5">
+                                    <Image
                                         src={src}
-                                        alt={`Portfolio item ${index + 1}`}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                        loading="lazy"
+                                        alt={`Sidhi Vinayak Events Portfolio - Photography ${index + 1}`}
+                                        fill
+                                        className="object-cover transition-transform duration-700 group-hover:scale-110"
                                     />
                                 </div>
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">

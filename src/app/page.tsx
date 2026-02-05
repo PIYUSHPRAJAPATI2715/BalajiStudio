@@ -8,11 +8,13 @@ import BookingCalendar from '@/components/BookingCalendar';
 import Contact from '@/components/Contact';
 import Navbar from '@/components/Navbar';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import JsonLd from '@/components/JsonLd';
 
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white selection:bg-primary selection:text-black overflow-x-hidden">
+      <JsonLd />
       <Navbar />
       <Hero />
       <About />

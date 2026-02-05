@@ -60,7 +60,7 @@ export default function Hero() {
                     transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
                     className="text-4xl md:text-6xl lg:text-8xl font-bold font-heading mb-6 uppercase drop-shadow-2xl"
                 >
-                    <span className="text-gradient-gold">Sidhi Vinayak</span> <br className="hidden md:block" /> <span className="text-white">events</span>
+                    <span className="text-gradient-gold">Sidhi Vinayak</span> <br className="hidden md:block" /> <span className="text-white">Events Jaipur</span>
                 </motion.h1>
 
                 <motion.p

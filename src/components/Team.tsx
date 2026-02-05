@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Phone, User } from 'lucide-react';
+import Image from 'next/image';
 
 const team = [
     {
@@ -50,10 +51,11 @@ export default function Team() {
                             className="bg-zinc-900 rounded-2xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all group"
                         >
                             <div className="h-60 overflow-hidden relative">
-                                <img
+                                <Image
                                     src={member.image}
-                                    alt={member.name}
-                                    className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                                    alt={`Sidhi Vinayak Events - ${member.name} (${member.role})`}
+                                    fill
+                                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent opacity-80" />
                                 <div className="absolute bottom-4 left-4">
