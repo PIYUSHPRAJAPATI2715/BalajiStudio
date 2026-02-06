@@ -19,33 +19,33 @@ export default function About() {
                     >
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
-                                <Image src="/assets/wedding_1.png" alt="Best Wedding Photography in Jaipur by Sidhi Vinayak Events" fill className="object-cover" />
+                                <Image src="/assets/wedding_1.png" alt="Sidhi Vinayak Events - Wedding Photography" fill className="object-cover" />
                             </div>
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500 mt-4">
-                                <Image src="/assets/prewedding_1.png" alt="Creative Pre-Wedding Shoot Jaipur - Sidhi Vinayak Events" fill className="object-cover" />
+                                <Image src="/assets/prewedding_1.png" alt="Sidhi Vinayak Events - Pre-Wedding Photography" fill className="object-cover" />
                             </div>
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
-                                <Image src="/assets/c1.jfif" alt="Professional Cinematic Wedding Film Jaipur" fill className="object-cover" />
+                                <Image src="/assets/c1.jfif" alt="Sidhi Vinayak Events - Cinematic Photography" fill className="object-cover" />
                             </div>
 
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
-                                <Image src="/assets/b1.jfif" alt="Traditional Bride Entry Photography Jaipur" fill className="object-cover" />
+                                <Image src="/assets/b1.jfif" alt="Sidhi Vinayak Events - Bride Entry Photography" fill className="object-cover" />
                             </div>
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500 mt-4">
-                                <Image src="/assets/v1.jfif" alt="Vermala Ceremony Photography Best Event Planner Jaipur" fill className="object-cover" />
+                                <Image src="/assets/v1.jfif" alt="Sidhi Vinayak Events - Vermala Ceremony Photography" fill className="object-cover" />
                             </div>
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
-                                <Image src="/assets/s1.jfif" alt="Elegant Baby Shower Photography jaipur" fill className="object-cover" />
+                                <Image src="/assets/s1.jfif" alt="Sidhi Vinayak Events - Maternity Photography" fill className="object-cover" />
                             </div>
 
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
-                                <Image src="/assets/p1.jfif" alt="Vibrant Birthday Party Photography Jaipur" fill className="object-cover" />
+                                <Image src="/assets/p1.jfif" alt="Sidhi Vinayak Events - Birthday Party Photography" fill className="object-cover" />
                             </div>
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500 mt-4">
-                                <Image src="/assets/h1.jfif" alt="House Opening Event Management Jaipur" fill className="object-cover" />
+                                <Image src="/assets/h1.jfif" alt="Sidhi Vinayak Events - House Opening Photography" fill className="object-cover" />
                             </div>
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
-                                <Image src="/assets/d1.jfif" alt="Modern Drone Coverage for Events Jaipur" fill className="object-cover" />
+                                <Image src="/assets/d1.jfif" alt="Sidhi Vinayak Events - Drone Photography" fill className="object-cover" />
                             </div>
                         </div>
                     </motion.div>

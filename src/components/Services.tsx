@@ -147,7 +147,7 @@ export default function Services() {
                             <div className="absolute inset-0">
                                 <Image
                                     src={service.image}
-                                    alt={`${service.name} in Jaipur - Best Event Management by Sidhi Vinayak Events`}
+                                    alt={service.name}
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
