@@ -233,7 +233,7 @@ export default function Reviews() {
                                     <div className="flex items-center gap-4 mt-auto pt-6 border-t border-white/5">
                                         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/20 bg-zinc-700 flex-shrink-0 relative">
                                             {review.image ? (
-                                                <Image src={review.image} alt={review.name} fill sizes="48px" className="object-cover" />
+                                                <Image src={review.image} alt={review.name} fill unoptimized sizes="48px" className="object-cover" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-xl font-bold text-gray-400">
                                                     {review.name.charAt(0)}
@@ -278,7 +278,7 @@ export default function Reviews() {
                                 <div className="flex items-center gap-3 mt-auto pt-4 border-t border-white/5">
                                     <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20 bg-zinc-700 flex-shrink-0 relative">
                                         {review.image ? (
-                                            <Image src={review.image} alt={review.name} fill sizes="40px" className="object-cover" />
+                                            <Image src={review.image} alt={review.name} fill unoptimized sizes="40px" className="object-cover" />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-lg font-bold text-gray-400">
                                                 {review.name.charAt(0)}
@@ -332,7 +332,7 @@ export default function Reviews() {
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20 bg-zinc-800 flex-shrink-0 relative">
                                                     {review.image ? (
-                                                        <Image src={review.image} alt={review.name} fill sizes="40px" className="object-cover" />
+                                                        <Image src={review.image} alt={review.name} fill unoptimized sizes="40px" className="object-cover" />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-lg font-bold text-gray-400">
                                                             {review.name.charAt(0)}
