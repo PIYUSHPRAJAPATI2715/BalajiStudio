@@ -8,23 +8,45 @@ const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.sidhivinayakevents.in"),
-  title: "Sidhi Vinayak Events | Premium Event Management & Photography in Jaipur",
-  description: "Sidhi Vinayak Events offers premium event management, wedding photography, cinematography, and pre-wedding shoots in Jaipur. We create timeless memories for your special moments.",
-  keywords: ["Event Management Jaipur", "Wedding Photography Jaipur", "Cinematography", "Pre-wedding Shoot", "Sidhi Vinayak Events", "Best Event Planner Jaipur", "Wedding Cinematographer"],
+  title: "Sidhi Vinayak Events | Best Event Management & Wedding Photography in Jaipur",
+  description: "Sidhi Vinayak Events: Top-rated event management, destination wedding photography, cinematography, and pre-wedding shoots in Jaipur. Over 10 years of creating timeless memories.",
+  keywords: [
+    "Event Management Jaipur",
+    "Wedding Photography Jaipur",
+    "Best Event Planner Jaipur",
+    "Destination Wedding Jaipur",
+    "Cinematography Jaipur",
+    "Pre-wedding Shoot Jaipur",
+    "Sidhi Vinayak Events",
+    "Wedding Cinematographer Jaipur",
+    "Birthday Party Planner Jaipur",
+    "Corporate Event Management Jaipur"
+  ],
   authors: [{ name: "Sidhi Vinayak Events" }],
   creator: "Sidhi Vinayak Events",
   publisher: "Sidhi Vinayak Events",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
-    title: "Sidhi Vinayak Events | Premium Event Management in Jaipur",
-    description: "Creating timeless memories for your special moments. Specialized in weddings, parties, and corporate events.",
+    title: "Sidhi Vinayak Events | Best Event Management & Photography in Jaipur",
+    description: "Award-winning event management and wedding photography in Jaipur. Specialized in destination weddings and cinematic films.",
     url: "https://www.sidhivinayakevents.in",
     siteName: "Sidhi Vinayak Events",
     images: [
       {
         url: "/logo.jpg",
-        width: 800,
-        height: 600,
-        alt: "Sidhi Vinayak Events Logo",
+        width: 1200,
+        height: 630,
+        alt: "Sidhi Vinayak Events - Best Wedding Photography in Jaipur",
       },
     ],
     locale: "en_IN",
@@ -32,8 +54,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sidhi Vinayak Events | Event Management & Photography",
-    description: "Premium Event Management services in Jaipur. Specialized in weddings and cinematic photography.",
+    title: "Sidhi Vinayak Events | Top Event Management in Jaipur",
+    description: "Premium wedding photography and event planning services in Jaipur. Book your special day with the best.",
     images: ["/logo.jpg"],
   },
   icons: {
