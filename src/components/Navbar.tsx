@@ -33,7 +33,7 @@ export default function Navbar() {
             <div className="container mx-auto px-4 flex justify-between items-center">
                 <Link href="/" className="text-xl md:text-2xl font-bold flex items-center gap-3 text-primary font-heading">
                     <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/50">
-                        <img src="/logo.jpg" alt="Sidhi Vinayak Events" className="w-full h-full object-cover" />
+                        <img src="/logo.jpg" alt="Sidhi Vinayak Events" width={48} height={48} className="w-full h-full object-cover" />
                     </div>
                     <span>Sidhi Vinayak Events</span>
                 </Link>
@@ -55,6 +55,8 @@ export default function Navbar() {
                 <button
                     className="md:hidden text-white hover:text-primary transition-colors"
                     onClick={() => setIsOpen(!isOpen)}
+                    aria-label={isOpen ? "Close menu" : "Open menu"}
+                    aria-expanded={isOpen}
                 >
                     {isOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
                 </button>

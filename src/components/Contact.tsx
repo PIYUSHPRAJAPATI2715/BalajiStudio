@@ -123,6 +123,7 @@ export default function Contact() {
                                         href="https://www.youtube.com/@SidhiVinayak-Jaipur"
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        aria-label="Visit our YouTube channel"
                                         className="flex items-center gap-3 p-3 bg-zinc-800 rounded-xl border border-white/5 hover:border-primary/50 transition-all group flex-1"
                                     >
                                         <div className="p-2 bg-red-600/20 rounded-lg text-red-500 group-hover:bg-red-600 group-hover:text-white transition-colors">
@@ -134,6 +135,7 @@ export default function Contact() {
                                         href="https://www.instagram.com/sidhivinayak_eventsjaipur/"
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        aria-label="Follow us on Instagram"
                                         className="flex items-center gap-3 p-3 bg-zinc-800 rounded-xl border border-white/5 hover:border-primary/50 transition-all group flex-1"
                                     >
                                         <div className="p-2 bg-pink-600/20 rounded-lg text-pink-500 group-hover:bg-pink-600 group-hover:text-white transition-colors">
