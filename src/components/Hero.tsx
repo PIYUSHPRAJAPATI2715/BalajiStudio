@@ -14,7 +14,6 @@ export default function Hero() {
                 muted
                 playsInline
                 preload="auto"
-                poster="/logo.jpg"
                 className="absolute top-0 left-0 w-full h-full object-cover z-0"
             >
                 <source src="/assets/background.mp4" type="video/mp4" />
@@ -55,9 +54,9 @@ export default function Hero() {
                 </motion.div>
 
                 <motion.h1
-                    initial={{ opacity: 0, scale: 0.9, filter: "blur(5px)" }}
-                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                    transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
                     className="text-4xl md:text-6xl lg:text-8xl font-bold font-heading mb-6 uppercase drop-shadow-2xl"
                 >
                     <span className="text-gradient-gold">Sidhi Vinayak</span> <br className="hidden md:block" /> <span className="text-white">Events Jaipur</span>

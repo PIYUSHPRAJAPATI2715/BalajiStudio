@@ -2,10 +2,10 @@ import Hero from '@/components/Hero';
 import Navbar from '@/components/Navbar';
 import Services from '@/components/Services';
 import About from '@/components/About';
+import Gallery from '@/components/Gallery';
+import Team from '@/components/Team';
 import dynamic from 'next/dynamic';
 
-const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: true });
-const Team = dynamic(() => import('@/components/Team'), { ssr: true });
 const Reviews = dynamic(() => import('@/components/Reviews'), { ssr: true });
 const BookingCalendar = dynamic(() => import('@/components/BookingCalendar'), { ssr: true });
 const FAQ = dynamic(() => import('@/components/FAQ'), { ssr: true });
