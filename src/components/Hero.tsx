@@ -35,9 +35,9 @@ export default function Hero() {
                     }}
                     style={{ x: 0 }}
                 >
-                    <span className="mx-4">SIDHI VINAYAK EVENTS</span>
-                    <span className="mx-4">SIDHI VINAYAK EVENTS</span>
-                    <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                    <span className="mx-4">BEST EVENT PLANNER JAIPUR</span>
+                    <span className="mx-4">WEDDING PHOTOGRAPHY</span>
+                    <span className="mx-4">CINEMATOGRAPHY JAIPUR</span>
                     <span className="mx-4">SIDHI VINAYAK EVENTS</span>
                 </motion.div>
             </div>
@@ -50,7 +50,7 @@ export default function Hero() {
                     transition={{ duration: 0.8, delay: 0.2 }}
                 >
                     <h2 className="text-xl md:text-2xl font-light tracking-[0.2em] text-primary mb-4 uppercase">
-                        Capturing Emotions
+                        Top Rated Event Organizers
                     </h2>
                 </motion.div>
 
@@ -60,16 +60,16 @@ export default function Hero() {
                     transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
                     className="text-4xl md:text-6xl lg:text-8xl font-bold font-heading mb-6 uppercase drop-shadow-2xl"
                 >
-                    <span className="text-gradient-gold">Sidhi Vinayak</span> <br className="hidden md:block" /> <span className="text-white">Events Jaipur</span>
+                    <span className="text-gradient-gold">Best Event Management</span> <br className="hidden md:block" /> <span className="text-white">& Wedding Photography</span>
                 </motion.h1>
 
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.8 }}
-                    className="text-lg md:text-2xl text-gray-200 max-w-2xl mb-12 font-light"
+                    className="text-lg md:text-2xl text-gray-200 max-w-3xl mb-12 font-light"
                 >
-                    Premium Event Management services. Creating timeless memories for your special moments.
+                    Sidhi Vinayak Events: Premium Event Management & Cinematic Photography services in Jaipur. Creating timeless memories for your special moments since 2019.
                 </motion.p>
 
                 <motion.div
