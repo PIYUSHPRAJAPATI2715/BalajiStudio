@@ -12,6 +12,9 @@ const images = [
     '/assets/WhatsApp Image 2026-01-30 at 9.54.06 PM.jpeg',
     '/assets/WhatsApp Image 2026-01-30 at 9.54.36 PM.jpeg',
     '/assets/WhatsApp Image 2026-01-30 at 9.54.37 PM.jpeg',
+    '/assets/WhatsApp Image 2026-01-30 at 10.10.29 PM.jpeg',
+    '/assets/WhatsApp Image 2026-01-30 at 9.54.35 PM.jpeg',
+    '/assets/WhatsApp Image 2026-01-30 at 9.54.38 PM.jpeg',
     '/assets/c1.jfif', // Cinematic
     '/assets/v1.jfif', // Vermala
 ];
@@ -85,6 +88,7 @@ export default function Gallery() {
                                         src={src}
                                         alt={`Sidhi Vinayak Events Portfolio - Photography ${index + 1}`}
                                         fill
+                                        unoptimized
                                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                                     />

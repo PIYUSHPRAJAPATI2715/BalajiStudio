@@ -19,33 +19,33 @@ export default function About() {
                     >
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
-                                <Image src="/assets/wedding_1.png" alt="Sidhi Vinayak Events - Wedding Photography" fill sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
+                                <Image src="/assets/wedding_1.png" alt="Sidhi Vinayak Events - Wedding Photography" fill unoptimized sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
                             </div>
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500 mt-4">
-                                <Image src="/assets/prewedding_1.png" alt="Sidhi Vinayak Events - Pre-Wedding Photography" fill sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
+                                <Image src="/assets/prewedding_1.png" alt="Sidhi Vinayak Events - Pre-Wedding Photography" fill unoptimized sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
                             </div>
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
-                                <Image src="/assets/c1.jfif" alt="Sidhi Vinayak Events - Cinematic Photography" fill sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
+                                <Image src="/assets/c1.jfif" alt="Sidhi Vinayak Events - Cinematic Photography" fill unoptimized sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
                             </div>
 
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
-                                <Image src="/assets/b1.jfif" alt="Sidhi Vinayak Events - Bride Entry Photography" fill sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
+                                <Image src="/assets/b1.jfif" alt="Sidhi Vinayak Events - Bride Entry Photography" fill unoptimized sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
                             </div>
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500 mt-4">
-                                <Image src="/assets/v1.jfif" alt="Sidhi Vinayak Events - Vermala Ceremony Photography" fill sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
+                                <Image src="/assets/v1.jfif" alt="Sidhi Vinayak Events - Vermala Ceremony Photography" fill unoptimized sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
                             </div>
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
-                                <Image src="/assets/s1.jfif" alt="Sidhi Vinayak Events - Maternity Photography" fill sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
+                                <Image src="/assets/s1.jfif" alt="Sidhi Vinayak Events - Maternity Photography" fill unoptimized sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
                             </div>
 
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
-                                <Image src="/assets/p1.jfif" alt="Sidhi Vinayak Events - Birthday Party Photography" fill sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
+                                <Image src="/assets/p1.jfif" alt="Sidhi Vinayak Events - Birthday Party Photography" fill unoptimized sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
                             </div>
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500 mt-4">
-                                <Image src="/assets/h1.jfif" alt="Sidhi Vinayak Events - House Opening Photography" fill sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
+                                <Image src="/assets/h1.jfif" alt="Sidhi Vinayak Events - House Opening Photography" fill unoptimized sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
                             </div>
                             <div className="relative h-24 w-full rounded-lg border border-white/5 overflow-hidden hover:scale-105 transition-transform duration-500">
-                                <Image src="/assets/d1.jfif" alt="Sidhi Vinayak Events - Drone Photography" fill sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
+                                <Image src="/assets/d1.jfif" alt="Sidhi Vinayak Events - Drone Photography" fill unoptimized sizes="(max-width: 640px) 33vw, 20vw" className="object-cover" />
                             </div>
                         </div>
                     </motion.div>
