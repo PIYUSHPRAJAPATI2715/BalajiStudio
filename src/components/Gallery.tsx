@@ -85,6 +85,7 @@ export default function Gallery() {
                                         src={src}
                                         alt={`Sidhi Vinayak Events Portfolio - Photography ${index + 1}`}
                                         fill
+                                        unoptimized
                                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                                     />
                                 </div>

@@ -55,6 +55,7 @@ export default function Team() {
                                     src={member.image}
                                     alt={`Sidhi Vinayak Events - ${member.name} (${member.role})`}
                                     fill
+                                    unoptimized
                                     className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent opacity-80" />
