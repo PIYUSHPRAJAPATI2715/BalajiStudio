@@ -88,6 +88,7 @@ export default function Gallery() {
                                         src={src}
                                         alt={`Sidhi Vinayak Events Portfolio - Photography ${index + 1}`}
                                         fill
+                                        unoptimized
                                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                                     />
