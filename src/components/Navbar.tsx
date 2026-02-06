@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Camera } from 'lucide-react';
 
@@ -32,8 +33,15 @@ export default function Navbar() {
         >
             <div className="container mx-auto px-4 flex justify-between items-center">
                 <Link href="/" className="text-xl md:text-2xl font-bold flex items-center gap-3 text-primary font-heading">
-                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/50">
-                        <img src="/logo.jpg" alt="Sidhi Vinayak Events" width={48} height={48} className="w-full h-full object-cover" />
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/50 relative">
+                        <Image
+                            src="/logo.jpg"
+                            alt="Sidhi Vinayak Events Logo"
+                            width={48}
+                            height={48}
+                            priority
+                            className="object-cover"
+                        />
                     </div>
                     <span>Sidhi Vinayak Events</span>
                 </Link>

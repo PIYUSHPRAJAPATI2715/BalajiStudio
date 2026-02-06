@@ -14,6 +14,7 @@ export default function Hero() {
                 muted
                 playsInline
                 preload="auto"
+                poster="/logo.jpg"
                 className="absolute top-0 left-0 w-full h-full object-cover z-0"
             >
                 <source src="/assets/background.mp4" type="video/mp4" />
@@ -24,23 +25,21 @@ export default function Hero() {
             {/* Overlay */}
             <div className="absolute inset-0 bg-black/50 z-10" />
 
-            {/* Background Marquee Text */}
+            {/* Background Marquee Text - Pure CSS for 100% Performance */}
             <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden opacity-10 pointer-events-none select-none">
-                <motion.div
-                    className="whitespace-nowrap flex text-[20vh] md:text-[30vh] font-bold font-heading text-white/20"
-                    animate={{ x: [0, -1000] }} // specific value might be needed or use percentage if width is known, but simplistic loop works for now. Better to use percentage with repeat.
-                    transition={{
-                        repeat: Infinity,
-                        duration: 30,
-                        ease: "linear"
-                    }}
-                    style={{ x: 0 }}
-                >
-                    <span className="mx-4">SIDHI VINAYAK EVENTS</span>
-                    <span className="mx-4">SIDHI VINAYAK EVENTS</span>
-                    <span className="mx-4">SIDHI VINAYAK EVENTS</span>
-                    <span className="mx-4">SIDHI VINAYAK EVENTS</span>
-                </motion.div>
+                <div className="marquee-container">
+                    <div className="marquee-content whitespace-nowrap text-[20vh] md:text-[30vh] font-bold font-heading text-white/20">
+                        <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                        <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                        <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                        <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                        {/* Duplicate for seamless loop */}
+                        <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                        <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                        <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                        <span className="mx-4">SIDHI VINAYAK EVENTS</span>
+                    </div>
+                </div>
             </div>
 
             {/* Content */}
