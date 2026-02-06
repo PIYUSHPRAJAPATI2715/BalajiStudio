@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, Maximize2 } from 'lucide-react';
+import { X, Maximize2 } from 'lucide-react';
 import { useState } from 'react';
 import Image from 'next/image';
 
