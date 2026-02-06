@@ -50,9 +50,9 @@ export default function Hero() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                 >
-                    <h2 className="text-xl md:text-2xl font-light tracking-[0.2em] text-primary mb-4 uppercase">
+                    <span className="block text-xl md:text-2xl font-light tracking-[0.2em] text-primary mb-4 uppercase">
                         Capturing Emotions
-                    </h2>
+                    </span>
                 </motion.div>
 
                 <motion.h1

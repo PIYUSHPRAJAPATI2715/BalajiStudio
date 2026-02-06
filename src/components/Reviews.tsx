@@ -121,8 +121,9 @@ export default function Reviews() {
 
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     <div>
-                                        <label className="block text-sm text-gray-400 mb-2">Your Name</label>
+                                        <label htmlFor="review-name" className="block text-sm text-gray-400 mb-2">Your Name</label>
                                         <input
+                                            id="review-name"
                                             type="text"
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -131,8 +132,9 @@ export default function Reviews() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm text-gray-400 mb-2">Event Type</label>
+                                        <label htmlFor="event-type" className="block text-sm text-gray-400 mb-2">Event Type</label>
                                         <input
+                                            id="event-type"
                                             type="text"
                                             value={formData.event}
                                             onChange={(e) => setFormData({ ...formData, event: e.target.value })}
@@ -142,13 +144,14 @@ export default function Reviews() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm text-gray-400 mb-2">Rating</label>
+                                        <span className="block text-sm text-gray-400 mb-2">Rating</span>
                                         <div className="flex gap-2">
                                             {[1, 2, 3, 4, 5].map((star) => (
                                                 <button
                                                     key={star}
                                                     type="button"
                                                     onClick={() => setFormData({ ...formData, rating: star })}
+                                                    aria-label={`Rate ${star} stars`}
                                                     className={`transition-colors ${star <= formData.rating ? 'text-yellow-500' : 'text-zinc-700'}`}
                                                 >
                                                     <Star className="w-8 h-8 fill-current" />
@@ -157,8 +160,9 @@ export default function Reviews() {
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-sm text-gray-400 mb-2">Review</label>
+                                        <label htmlFor="review-text" className="block text-sm text-gray-400 mb-2">Review</label>
                                         <textarea
+                                            id="review-text"
                                             value={formData.text}
                                             onChange={(e) => setFormData({ ...formData, text: e.target.value })}
                                             className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-primary outline-none h-24 resize-none"

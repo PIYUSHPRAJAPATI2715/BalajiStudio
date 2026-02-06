@@ -153,8 +153,9 @@ export default function Contact() {
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-2">Your Name</label>
+                                    <label htmlFor="contact-name" className="block text-sm font-medium text-gray-400 mb-2">Your Name</label>
                                     <input
+                                        id="contact-name"
                                         type="text"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -164,8 +165,9 @@ export default function Contact() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-2">Phone Number</label>
+                                    <label htmlFor="contact-phone" className="block text-sm font-medium text-gray-400 mb-2">Phone Number</label>
                                     <input
+                                        id="contact-phone"
                                         type="tel"
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -177,8 +179,9 @@ export default function Contact() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-400 mb-2">Email Address</label>
+                                <label htmlFor="contact-email" className="block text-sm font-medium text-gray-400 mb-2">Email Address</label>
                                 <input
+                                    id="contact-email"
                                     type="email"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -189,8 +192,9 @@ export default function Contact() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-400 mb-2">Message</label>
+                                <label htmlFor="contact-message" className="block text-sm font-medium text-gray-400 mb-2">Message</label>
                                 <textarea
+                                    id="contact-message"
                                     value={formData.message}
                                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                     className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-primary outline-none h-32 resize-none transition-colors"

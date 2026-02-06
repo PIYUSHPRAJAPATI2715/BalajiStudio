@@ -102,11 +102,11 @@ export default function BookingCalendar() {
                     {/* Calendar UI */}
                     <div className="w-full lg:w-1/2 bg-zinc-900/50 p-4 md:p-6 rounded-2xl border border-white/10">
                         <div className="flex justify-between items-center mb-8">
-                            <button onClick={prevMonth} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                            <button onClick={prevMonth} aria-label="Previous month" className="p-2 hover:bg-white/10 rounded-full transition-colors">
                                 <ChevronLeft />
                             </button>
                             <h3 className="text-xl font-bold">{format(currentDate, 'MMMM yyyy')}</h3>
-                            <button onClick={nextMonth} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                            <button onClick={nextMonth} aria-label="Next month" className="p-2 hover:bg-white/10 rounded-full transition-colors">
                                 <ChevronRight />
                             </button>
                         </div>
@@ -131,6 +131,7 @@ export default function BookingCalendar() {
                                     <button
                                         key={day.toISOString()}
                                         onClick={() => handleDateClick(day)}
+                                        aria-label={`Select ${format(day, 'MMMM d, yyyy')}${booking ? ' - Booked' : ''}`}
                                         className={`
                                             relative h-14 rounded-lg flex flex-col items-center justify-center transition-all duration-300
                                             ${isSelected

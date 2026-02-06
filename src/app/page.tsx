@@ -1,15 +1,17 @@
 import Hero from '@/components/Hero';
-import Services from '@/components/Services';
-import About from '@/components/About';
-import Gallery from '@/components/Gallery';
-import Team from '@/components/Team';
-import Reviews from '@/components/Reviews';
-import BookingCalendar from '@/components/BookingCalendar';
-import FAQ from '@/components/FAQ';
-import Contact from '@/components/Contact';
 import Navbar from '@/components/Navbar';
-import WhatsAppButton from '@/components/WhatsAppButton';
-import JsonLd from '@/components/JsonLd';
+import dynamic from 'next/dynamic';
+
+const Services = dynamic(() => import('@/components/Services'));
+const About = dynamic(() => import('@/components/About'));
+const Gallery = dynamic(() => import('@/components/Gallery'));
+const Team = dynamic(() => import('@/components/Team'));
+const Reviews = dynamic(() => import('@/components/Reviews'));
+const BookingCalendar = dynamic(() => import('@/components/BookingCalendar'));
+const FAQ = dynamic(() => import('@/components/FAQ'));
+const Contact = dynamic(() => import('@/components/Contact'));
+const WhatsAppButton = dynamic(() => import('@/components/WhatsAppButton'));
+const JsonLd = dynamic(() => import('@/components/JsonLd'));
 
 
 export default function Home() {
