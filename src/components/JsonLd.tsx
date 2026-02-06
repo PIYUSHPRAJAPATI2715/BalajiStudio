@@ -3,14 +3,14 @@ import React from 'react';
 const JsonLd = () => {
     const businessData = {
         "@context": "https://schema.org",
-        "@type": "EventVenue",
+        "@type": "ProfessionalService",
         "name": "Sidhi Vinayak Events",
         "alternateName": "Sidhi Vinayak Wedding Photography",
         "image": "https://www.sidhivinayakevents.in/logo.jpg",
         "@id": "https://www.sidhivinayakevents.in",
         "url": "https://www.sidhivinayakevents.in",
         "telephone": "+91 78917 66624",
-        "priceRange": "$$",
+        "priceRange": "INR",
         "address": {
             "@type": "PostalAddress",
             "streetAddress": "Niwaru, Jhotwara",
@@ -24,8 +24,13 @@ const JsonLd = () => {
             "latitude": 26.9124,
             "longitude": 75.7873
         },
-        "areaServed": "Jaipur and nearby areas",
-        "description": "Best event management and wedding photography company in Jaipur. Specializing in destination weddings, cinematic films, and premium event planning.",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5.0",
+            "reviewCount": "125"
+        },
+        "areaServed": "Jaipur, Rajasthan and Overseas",
+        "description": "Premium wedding photography and event management company in Jaipur. We specialize in cinematic wedding films, destination weddings, and creative event planning with a 5-star customer satisfacton rate.",
         "openingHoursSpecification": {
             "@type": "OpeningHoursSpecification",
             "dayOfWeek": [
@@ -46,27 +51,34 @@ const JsonLd = () => {
         ],
         "hasOfferCatalog": {
             "@type": "OfferCatalog",
-            "name": "Event Services",
+            "name": "Wedding & Event Services",
             "itemListElement": [
                 {
                     "@type": "Offer",
                     "itemOffered": {
                         "@type": "Service",
-                        "name": "Wedding Photography"
+                        "name": "Cinematic Wedding Photography"
                     }
                 },
                 {
                     "@type": "Offer",
                     "itemOffered": {
                         "@type": "Service",
-                        "name": "Event Management"
+                        "name": "Luxury Event Management"
                     }
                 },
                 {
                     "@type": "Offer",
                     "itemOffered": {
                         "@type": "Service",
-                        "name": "Cinematography"
+                        "name": "Pre-Wedding Shoot Jaipur"
+                    }
+                },
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Service",
+                        "name": "Candid Photography"
                     }
                 }
             ]
