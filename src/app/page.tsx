@@ -1,17 +1,17 @@
 import Hero from '@/components/Hero';
 import Navbar from '@/components/Navbar';
+import Services from '@/components/Services';
+import About from '@/components/About';
 import dynamic from 'next/dynamic';
 
-const Services = dynamic(() => import('@/components/Services'));
-const About = dynamic(() => import('@/components/About'));
-const Gallery = dynamic(() => import('@/components/Gallery'));
-const Team = dynamic(() => import('@/components/Team'));
-const Reviews = dynamic(() => import('@/components/Reviews'));
-const BookingCalendar = dynamic(() => import('@/components/BookingCalendar'));
-const FAQ = dynamic(() => import('@/components/FAQ'));
-const Contact = dynamic(() => import('@/components/Contact'));
-const WhatsAppButton = dynamic(() => import('@/components/WhatsAppButton'));
-const JsonLd = dynamic(() => import('@/components/JsonLd'));
+const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: true });
+const Team = dynamic(() => import('@/components/Team'), { ssr: true });
+const Reviews = dynamic(() => import('@/components/Reviews'), { ssr: true });
+const BookingCalendar = dynamic(() => import('@/components/BookingCalendar'), { ssr: true });
+const FAQ = dynamic(() => import('@/components/FAQ'), { ssr: true });
+const Contact = dynamic(() => import('@/components/Contact'), { ssr: true });
+const WhatsAppButton = dynamic(() => import('@/components/WhatsAppButton'), { ssr: false });
+const JsonLd = dynamic(() => import('@/components/JsonLd'), { ssr: true });
 
 
 export default function Home() {

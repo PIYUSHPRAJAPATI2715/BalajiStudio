@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, Maximize2 } from 'lucide-react';
 import { useState } from 'react';
+import Image from 'next/image';
 
 type ServiceModalProps = {
     isOpen: boolean;
@@ -76,10 +77,12 @@ export default function ServiceModal({ isOpen, onClose, service }: ServiceModalP
                                         className="aspect-square rounded-xl overflow-hidden group relative cursor-zoom-in"
                                         onClick={() => setSelectedImage(img)}
                                     >
-                                        <img
+                                        <Image
                                             src={img}
                                             alt={`${service.name} ${index + 1}`}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            className="object-cover transition-transform duration-700 group-hover:scale-110"
                                         />
                                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                             <Maximize2 className="w-8 h-8 text-white" />
@@ -121,11 +124,15 @@ export default function ServiceModal({ isOpen, onClose, service }: ServiceModalP
                                 >
                                     <X className="w-8 h-8" />
                                 </button>
-                                <img
-                                    src={selectedImage}
-                                    alt="Full View"
-                                    className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
-                                />
+                                <div className="relative w-full h-[80vh]">
+                                    <Image
+                                        src={selectedImage}
+                                        alt="Full View"
+                                        fill
+                                        sizes="90vw"
+                                        className="object-contain rounded-lg"
+                                    />
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
