@@ -19,16 +19,7 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
-// Security middleware
-app.use(helmet());
-
-// CORS
-const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:3000',
-  'https://www.sidhivinayakevents.in',
-  'https://sidhivinayakevents.in',
-];
-
+// CORS - Must be first before helmet & rate limiting
 app.use(cors({
   origin: true,
   credentials: true,
@@ -39,11 +30,21 @@ app.use(cors({
 // Handle preflight OPTIONS requests for all routes
 app.options('*', cors());
 app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') {
     return res.sendStatus(204);
   }
   next();
 });
+
+// Security middleware with cross-origin resource policy enabled
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginOpenerPolicy: { policy: "unsafe-none" },
+}));
 
 // Rate limiting
 const limiter = rateLimit({
