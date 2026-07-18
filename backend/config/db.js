@@ -15,6 +15,7 @@ const MONGODB_URI = sanitizeMongoUri(process.env.MONGODB_URI);
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(MONGODB_URI, {
+      dbName: 'SidhiVinayak',
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
     });
