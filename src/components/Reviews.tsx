@@ -59,8 +59,8 @@ export default function Reviews() {
             });
 
             if (res.ok) {
-                const newReview = await res.json();
-                setReviews([...reviews, newReview]);
+                const responseData = await res.json();
+                alert(responseData.message || 'Thank you! Your review has been submitted and is pending approval.');
                 setIsFormOpen(false);
                 setFormData({ name: '', event: '', rating: 5, text: '' });
             }

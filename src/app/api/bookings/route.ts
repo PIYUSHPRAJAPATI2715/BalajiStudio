@@ -1,62 +1,36 @@
-import { NextResponse } from 'next/server';
-import { getBookings, saveBooking, updateBooking } from '@/utils/storage';
+import { NextRequest, NextResponse } from 'next/server';
 
-export const dynamic = 'force-dynamic';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
-export async function GET() {
-    const bookings = getBookings();
-    return NextResponse.json(bookings);
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const month = searchParams.get('month');
+    const year = searchParams.get('year');
+
+    const qs = month && year ? `?month=${month}&year=${year}` : '';
+    const res = await fetch(`${API_URL}/api/bookings/calendar${qs}`, {
+      cache: 'no-store',
+    });
+
+    const data = await res.json();
+    const rawBookings = data && data.success && Array.isArray(data.data) ? data.data : [];
+    
+    // Convert date format from ISO to 'YYYY-MM-DD'
+    const formattedBookings = rawBookings.map((b: any) => {
+      let dateStr = b.date;
+      if (dateStr && dateStr.includes('T')) {
+        dateStr = dateStr.split('T')[0];
+      }
+      return {
+        ...b,
+        date: dateStr
+      };
+    });
+
+    return NextResponse.json(formattedBookings, { status: res.status });
+  } catch {
+    return NextResponse.json({ error: 'Failed to fetch bookings' }, { status: 500 });
+  }
 }
 
-export async function POST(request: Request) {
-    try {
-        const body = await request.json();
-
-        // Basic validation
-        if (!body.date || !body.programName || !body.location) {
-            return NextResponse.json(
-                { error: 'Missing required fields' },
-                { status: 400 }
-            );
-        }
-
-        const newBooking = saveBooking({
-            date: body.date,
-            programName: body.programName,
-            location: body.location,
-            clientName: body.clientName || 'Unknown',
-            eventType: body.eventType || 'Other',
-            totalAmount: Number(body.totalAmount) || 0,
-            receivedAmount: Number(body.receivedAmount) || 0,
-            status: body.status || 'upcoming'
-        });
-
-        return NextResponse.json(newBooking, { status: 201 });
-    } catch (error) {
-        return NextResponse.json(
-            { error: 'Failed to create booking' },
-            { status: 500 }
-        );
-    }
-}
-
-export async function PUT(request: Request) {
-    try {
-        const body = await request.json();
-        const { id, ...updates } = body;
-
-        if (!id) {
-            return NextResponse.json({ error: 'ID is required' }, { status: 400 });
-        }
-
-        const updated = updateBooking(id, updates);
-
-        if (!updated) {
-            return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
-        }
-
-        return NextResponse.json(updated);
-    } catch (error) {
-        return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
-    }
-}
