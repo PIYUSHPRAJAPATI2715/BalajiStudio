@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://Admin:KVDkPaXDO2SLqL3U@cluster0.rgkjhjo.mongodb.net/sidhivinayak?retryWrites=true&w=majority';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://Admin:KVDkPaXDO2SLqL3U@cluster0.rgkjhjo.mongodb.net/SidhiVinayak?retryWrites=true&w=majority';
 
 const connectDB = async () => {
   try {
