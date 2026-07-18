@@ -6,22 +6,22 @@ import Image from 'next/image';
 
 const team = [
   {
+    name: 'Piyush Prajapati',
+    role: 'Event, Photography & Editing Lead',
+    phone: '+91 95493 48495',
+    image: '/assets/piyush.jpg',
+  },
+  {
     name: 'Vishnu Prajapati',
-    role: 'Event Director',
+    role: 'Event Manager',
     phone: '+91 78917 66624',
     image: '/assets/vishnu.jpg',
   },
   {
     name: 'Manoj Prajapati',
-    role: 'Finance & Operations',
+    role: 'Finance Manager',
     phone: '+91 97821 30139',
     image: '/assets/mannu.jpg',
-  },
-  {
-    name: 'Piyush Prajapati',
-    role: 'Production & Creative Lead',
-    phone: '+91 95493 48495',
-    image: '/assets/piyush.jpg',
   },
 ];
 
