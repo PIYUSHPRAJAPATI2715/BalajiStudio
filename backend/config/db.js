@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://Admin:KVDkPaXDO2SLqL3U@cluster0.rgkjhjo.mongodb.net/SidhiVinayak?retryWrites=true&w=majority';
+let rawUri = process.env.MONGODB_URI || 'mongodb+srv://Admin:KVDkPaXDO2SLqL3U@cluster0.rgkjhjo.mongodb.net/SidhiVinayak?retryWrites=true&w=majority';
+const MONGODB_URI = rawUri.replace(/\/sidhivinayak(\?|$)/i, '/SidhiVinayak$1');
 
 const connectDB = async () => {
   try {
