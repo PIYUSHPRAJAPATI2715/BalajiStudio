@@ -18,7 +18,10 @@ async function handleProxy(req: NextRequest, { params }: { params: Promise<{ pat
 
     let body: any = undefined;
     if (req.method !== 'GET' && req.method !== 'HEAD') {
-      body = await req.arrayBuffer();
+      const arrBuf = await req.arrayBuffer();
+      if (arrBuf.byteLength > 0) {
+        body = Buffer.from(arrBuf);
+      }
     }
 
     const backendRes = await fetch(targetUrl, {
@@ -26,6 +29,8 @@ async function handleProxy(req: NextRequest, { params }: { params: Promise<{ pat
       headers,
       body,
       cache: 'no-store',
+      // @ts-ignore
+      duplex: 'half',
     });
 
     const data = await backendRes.arrayBuffer();

@@ -73,7 +73,19 @@ router.get('/', async (req, res) => {
 // @route   POST /api/gallery/upload
 // @desc    Upload image to Cloudinary (or Base64 fallback) & create gallery item
 // @access  Private
-router.post('/upload', protect, upload.single('image'), async (req, res) => {
+router.post(
+  '/upload',
+  protect,
+  (req, res, next) => {
+    upload.single('image')(req, res, (err) => {
+      if (err) {
+        console.error('Multer file parsing error:', err);
+        return res.status(400).json({ error: 'File upload error: ' + err.message });
+      }
+      next();
+    });
+  },
+  async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No image file provided' });
