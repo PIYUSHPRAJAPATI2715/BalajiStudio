@@ -16,8 +16,27 @@ const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 
-// Connect to MongoDB
-connectDB();
+const Admin = require('./models/Admin');
+
+// Connect to MongoDB & ensure default admin account exists
+connectDB().then(async () => {
+  try {
+    const adminCount = await Admin.countDocuments();
+    if (adminCount === 0) {
+      const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+      const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+      const admin = new Admin({
+        username: adminUsername,
+        passwordHash: adminPassword,
+        displayName: 'Sidhi Vinayak Admin',
+      });
+      await admin.save();
+      console.log(`✅ Default admin account created: ${adminUsername}`);
+    }
+  } catch (err) {
+    console.error('Admin auto-init error:', err.message);
+  }
+});
 
 // CORS - Must be first before helmet & rate limiting
 app.use(cors({
