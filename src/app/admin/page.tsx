@@ -828,17 +828,29 @@ function GalleryTab({ token }: { token: string }) {
     if (!selectedFile) return;
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append('image', selectedFile);
-      fd.append('title', fileFormData.title);
-      fd.append('category', fileFormData.category);
-      fd.append('featured', String(fileFormData.featured));
-      await api.gallery.upload(token, fd);
+      const base64Url = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (err) => reject(err);
+        reader.readAsDataURL(selectedFile);
+      });
+
+      await api.gallery.addByUrl(token, {
+        imageUrl: base64Url,
+        title: fileFormData.title,
+        category: fileFormData.category,
+        featured: fileFormData.featured,
+      });
+
       setShowUploadModal(false);
       setSelectedFile(null);
       setPreview('');
       load();
-    } catch (e: any) { alert(e.message); } finally { setUploading(false); }
+    } catch (e: any) {
+      alert(e.message || 'Upload failed');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleUrlAdd = async (e: React.FormEvent) => {
