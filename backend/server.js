@@ -15,6 +15,7 @@ const galleryRoutes = require('./routes/gallery');
 const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
+app.set('trust proxy', 1);
 
 const Admin = require('./models/Admin');
 
