@@ -6,6 +6,7 @@ import Services from '@/components/Services';
 import About from '@/components/About';
 import Gallery from '@/components/Gallery';
 import Team from '@/components/Team';
+import Footer from '@/components/Footer';
 import dynamic from 'next/dynamic';
 
 const Reviews = dynamic(() => import('@/components/Reviews'), { ssr: true });
@@ -15,10 +16,9 @@ const Contact = dynamic(() => import('@/components/Contact'), { ssr: true });
 const WhatsAppButton = dynamic(() => import('@/components/WhatsAppButton'), { ssr: false });
 const JsonLd = dynamic(() => import('@/components/JsonLd'), { ssr: true });
 
-
 export default function Home() {
   return (
-    <main className="min-h-screen bg-black text-white selection:bg-primary selection:text-black overflow-x-hidden">
+    <main className="min-h-screen bg-black text-white selection:bg-amber-400 selection:text-black overflow-x-hidden">
       <JsonLd />
       <Navbar />
       <Hero />
@@ -30,6 +30,7 @@ export default function Home() {
       <BookingCalendar />
       <FAQ />
       <Contact />
+      <Footer />
       <WhatsAppButton />
     </main>
   );
