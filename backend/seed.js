@@ -1,4 +1,6 @@
 require('dotenv').config();
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
 const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const Booking = require('./models/Booking');
