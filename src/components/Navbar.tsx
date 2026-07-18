@@ -35,7 +35,7 @@ export default function Navbar() {
                 <Link href="/" className="text-xl md:text-2xl font-bold flex items-center gap-3 text-primary font-heading">
                     <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/50 relative">
                         <Image
-                            src="/logo.jpg"
+                            src="/logo.png"
                             alt="Sidhi Vinayak Events Logo"
                             width={48}
                             height={48}

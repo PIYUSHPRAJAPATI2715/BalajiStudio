@@ -6,7 +6,7 @@ const JsonLd = () => {
         "@type": "ProfessionalService",
         "name": "Sidhi Vinayak Events",
         "alternateName": "Sidhi Vinayak Wedding Photography",
-        "image": "https://www.sidhivinayakevents.in/logo.jpg",
+        "image": "https://www.sidhivinayakevents.in/logo.png",
         "@id": "https://www.sidhivinayakevents.in",
         "url": "https://www.sidhivinayakevents.in",
         "telephone": "+91 78917 66624",

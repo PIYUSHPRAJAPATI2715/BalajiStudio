@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     siteName: "Sidhi Vinayak Events",
     images: [
       {
-        url: "/logo.jpg",
+        url: "/logo.png",
         width: 1200,
         height: 630,
         alt: "Sidhi Vinayak Events Jaipur - Wedding Photography & Events",
@@ -52,12 +52,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sidhi Vinayak Events | Best Wedding Photography & Events",
     description: "Premium wedding films and event services in Jaipur. Specialized in destination weddings and creative shoots.",
-    images: ["/logo.jpg"],
+    images: ["/logo.png"],
   },
   icons: {
-    icon: "/logo.jpg",
-    shortcut: "/logo.jpg",
-    apple: "/logo.jpg",
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
   },
   alternates: {
     canonical: "https://www.sidhivinayakevents.in",
