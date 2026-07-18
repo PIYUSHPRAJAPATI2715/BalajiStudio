@@ -6,8 +6,10 @@ const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 
+const JWT_SECRET = process.env.JWT_SECRET || 'sve_secret_f29cda1098bfe190382cb20027f91766a2f1';
+
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id }, JWT_SECRET, {
     expiresIn: '7d',
   });
 };
@@ -66,7 +68,7 @@ router.post(
       });
     } catch (error) {
       console.error('Login error:', error);
-      res.status(500).json({ error: 'Server error during login' });
+      res.status(500).json({ error: error.message || 'Server error during login' });
     }
   }
 );

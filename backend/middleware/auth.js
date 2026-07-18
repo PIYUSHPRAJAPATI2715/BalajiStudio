@@ -13,7 +13,8 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ error: 'Not authorized, no token provided' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const JWT_SECRET = process.env.JWT_SECRET || 'sve_secret_f29cda1098bfe190382cb20027f91766a2f1';
+    const decoded = jwt.verify(token, JWT_SECRET);
     const admin = await Admin.findById(decoded.id);
 
     if (!admin) {
