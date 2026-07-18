@@ -7,28 +7,50 @@ const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Cloudinary storage for multer
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'sidhi-vinayak-events/gallery',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'avif'],
-    transformation: [{ width: 1200, quality: 'auto', fetch_format: 'auto' }],
-  },
-});
-
+// Memory storage for robust file handling
+const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
   fileFilter: (req, file, cb) => {
-    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
-    if (allowed.includes(file.mimetype)) {
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/jpg'];
+    if (allowed.includes(file.mimetype) || file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
       cb(new Error('Only image files are allowed'), false);
     }
   },
 });
+
+// Helper to upload buffer to Cloudinary or return Base64 Data URI
+const processImageUpload = async (file) => {
+  const hasCloudinary = process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET;
+  
+  if (hasCloudinary) {
+    try {
+      return await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'sidhi-vinayak-events/gallery',
+            transformation: [{ width: 1200, quality: 'auto', fetch_format: 'auto' }],
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve({ imageUrl: result.secure_url, cloudinaryPublicId: result.public_id });
+          }
+        );
+        stream.end(file.buffer);
+      });
+    } catch (cloudinaryError) {
+      console.warn('Cloudinary upload error, falling back to Base64 Data URI:', cloudinaryError.message);
+    }
+  }
+
+  // Fallback to Base64 Data URI if Cloudinary is unconfigured or fails
+  const base64Data = file.buffer.toString('base64');
+  const mimeType = file.mimetype || 'image/png';
+  return { imageUrl: `data:${mimeType};base64,${base64Data}`, cloudinaryPublicId: '' };
+};
 
 // @route   GET /api/gallery
 // @desc    Get all gallery items (public)
@@ -44,12 +66,12 @@ router.get('/', async (req, res) => {
     const items = await Gallery.find(filter).sort({ order: 1, createdAt: -1 });
     res.json({ success: true, count: items.length, data: items });
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: error.message || 'Server error' });
   }
 });
 
 // @route   POST /api/gallery/upload
-// @desc    Upload image to Cloudinary & create gallery item
+// @desc    Upload image to Cloudinary (or Base64 fallback) & create gallery item
 // @access  Private
 router.post('/upload', protect, upload.single('image'), async (req, res) => {
   try {
@@ -58,13 +80,14 @@ router.post('/upload', protect, upload.single('image'), async (req, res) => {
     }
 
     const { title, category, featured, order } = req.body;
+    const { imageUrl, cloudinaryPublicId } = await processImageUpload(req.file);
 
     const galleryItem = await Gallery.create({
       title: title || '',
       category: category || 'Other',
-      imageUrl: req.file.path,
-      cloudinaryPublicId: req.file.filename,
-      featured: featured === 'true',
+      imageUrl,
+      cloudinaryPublicId: cloudinaryPublicId || '',
+      featured: featured === 'true' || featured === true,
       order: parseInt(order) || 0,
     });
 
