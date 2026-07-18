@@ -116,7 +116,7 @@ app.use((err, req, res, next) => {
     return res.status(403).json({ error: 'CORS error: origin not allowed' });
   }
   res.status(err.status || 500).json({
-    error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
+    error: err.message || 'Internal server error',
   });
 });
 

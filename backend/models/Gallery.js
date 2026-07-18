@@ -9,18 +9,7 @@ const gallerySchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: [
-        'Wedding',
-        'Pre Wedding',
-        'Cinematic',
-        'Bride Entry',
-        'Vermala',
-        'Baby Shower',
-        'Birthday',
-        'House Opening',
-        'Drone',
-        'Other',
-      ],
+      trim: true,
       default: 'Other',
     },
     imageUrl: {

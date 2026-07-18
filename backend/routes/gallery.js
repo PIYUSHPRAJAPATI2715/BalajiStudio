@@ -24,9 +24,11 @@ const upload = multer({
 
 // Helper to upload buffer to Cloudinary or return Base64 Data URI
 const processImageUpload = async (file) => {
-  const hasCloudinary = process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET;
-  
-  if (hasCloudinary) {
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME || 'dz2r4wi1q';
+  const apiKey = process.env.CLOUDINARY_API_KEY || '191788218421671';
+  const apiSecret = process.env.CLOUDINARY_API_SECRET || 'dPvGlH1jF7XjNy_Yol_4GPxCRo4';
+
+  if (cloudName && apiKey && apiSecret) {
     try {
       return await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
