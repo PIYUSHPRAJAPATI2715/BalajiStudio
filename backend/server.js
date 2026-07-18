@@ -105,7 +105,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`\n🚀 Sidhi Vinayak Events API running on port ${PORT}`);
   console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🌐 CORS allowed for: ${allowedOrigins.join(', ')}\n`);
+  console.log(`🌐 CORS enabled for all origins\n`);
 });
 
 module.exports = app;
