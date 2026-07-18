@@ -29,7 +29,20 @@ router.post(
 
     try {
       const { username, password } = req.body;
-      const admin = await Admin.findOne({ username: username.toLowerCase() });
+      const lowerUsername = (username || '').toLowerCase();
+      let admin = await Admin.findOne({ username: lowerUsername });
+
+      // Auto-create default admin account if database has no admin users yet
+      const count = await Admin.countDocuments();
+      if (count === 0) {
+        admin = new Admin({
+          username: lowerUsername || 'admin',
+          passwordHash: password || 'admin123',
+          displayName: 'Sidhi Vinayak Admin',
+        });
+        await admin.save();
+        console.log(`✅ On-demand created admin account: ${admin.username}`);
+      }
 
       if (!admin || !(await admin.comparePassword(password))) {
         return res.status(401).json({ error: 'Invalid username or password' });
