@@ -310,41 +310,41 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
         <div className="print-area w-[1000px] h-[800px] bg-white border-[6px] border-[#d4af37] p-8 text-black relative flex flex-col justify-between font-luxury-outfit select-none shadow-2xl">
           
           {/* Header Curved Ribbon details */}
-          <div className="absolute top-0 right-0 w-[420px] h-[190px] bg-zinc-950 rounded-bl-[190px] border-l-[4px] border-b-[4px] border-[#d4af37] text-white p-6 pl-16 pt-6 flex flex-col gap-2 font-luxury-outfit">
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-[#d4af37]">📞</span>
+          <div className="absolute top-0 right-0 w-[330px] h-[160px] bg-zinc-950 rounded-bl-[160px] border-l-[3px] border-b-[3px] border-[#d4af37] text-white p-5 pl-14 pt-4 flex flex-col gap-1 font-luxury-outfit text-[11px]">
+            <div className="flex items-center gap-2">
+              <span className="text-[#d4af37] text-[10px]">📞</span>
               <span>Vishnu – 7891766624</span>
             </div>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-[#d4af37]">📞</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[#d4af37] text-[10px]">📞</span>
               <span>Piyush – 9549348495</span>
             </div>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-[#d4af37]">📸</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[#d4af37] text-[10px]">📸</span>
               <span>@siddhivinayak_eventsjaipur</span>
             </div>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-[#d4af37]">🌐</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[#d4af37] text-[10px]">🌐</span>
               <span>www.sidhivinayakevents.in</span>
             </div>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-[#d4af37]">📍</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[#d4af37] text-[10px]">📍</span>
               <span>Niwaru Road, Jaipur</span>
             </div>
           </div>
 
           {/* Logo & Company details */}
-          <div className="flex items-start gap-4">
-            <div className="relative w-20 h-20 border-2 border-[#d4af37]/60 rounded-full overflow-hidden shrink-0 flex items-center justify-center bg-amber-500/5">
+          <div className="flex items-center gap-4 max-w-[600px]">
+            <div className="relative w-24 h-24 border border-[#d4af37]/60 rounded-full overflow-hidden shrink-0 flex items-center justify-center bg-transparent">
               <Image
                 src="/logo.png"
                 alt="Sidhi Vinayak Events Logo"
                 fill
                 priority
-                className="object-cover scale-95"
+                className="object-contain p-1"
               />
             </div>
-            <div>
+            <div className="flex flex-col justify-center">
               <h1 className="text-4xl font-extrabold font-luxury-serif text-[#9b7625] tracking-tight leading-none">
                 SIDHI VINAYAK
               </h1>
