@@ -92,7 +92,108 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
   };
 
   const handlePrint = () => {
-    window.print();
+    const printWindow = window.open('', '_blank', 'width=1100,height=850');
+    if (!printWindow) {
+      alert('Please allow popups to print / save PDF invoices.');
+      return;
+    }
+
+    const printContent = document.getElementById('print-area-container')?.innerHTML || '';
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${docType === 'bill' ? 'Invoice Bill' : 'Booking Confirmation'}</title>
+          <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+          <script src="https://cdn.tailwindcss.com"></script>
+          <script>
+            tailwind.config = {
+              theme: {
+                extend: {
+                  fontFamily: {
+                    signature: ['Great Vibes', 'cursive'],
+                    luxurySerif: ['Cinzel', 'serif'],
+                    luxuryOutfit: ['Outfit', 'sans-serif'],
+                  }
+                }
+              }
+            }
+          </script>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap');
+            
+            .font-signature {
+              font-family: 'Great Vibes', cursive;
+            }
+            .font-luxury-serif {
+              font-family: 'Cinzel', serif;
+            }
+            .font-luxury-outfit {
+              font-family: 'Outfit', sans-serif;
+            }
+
+            @media print {
+              @page {
+                size: A4 landscape;
+                margin: 0;
+              }
+              body {
+                margin: 0;
+                padding: 0;
+                background: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+              }
+              .print-container {
+                width: 297mm !important;
+                height: 210mm !important;
+                padding: 32px !important;
+                box-sizing: border-box !important;
+                border: 6px solid #d4af37 !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+              }
+            }
+            body {
+              background: #09090b;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              min-height: 100vh;
+              margin: 0;
+              padding: 20px;
+            }
+            .print-container {
+              width: 1000px;
+              height: 800px;
+              background: #ffffff;
+              border: 6px solid #d4af37;
+              padding: 32px;
+              box-sizing: border-box;
+              position: relative;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+            }
+          </style>
+        </head>
+        <body>
+          <div class="print-container text-black select-none">
+            ${printContent}
+          </div>
+          <script>
+            window.onload = function() {
+              setTimeout(function() {
+                window.print();
+              }, 500);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
   };
 
   return (
@@ -110,39 +211,6 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
         }
         .font-luxury-outfit {
           font-family: 'Outfit', sans-serif;
-        }
-
-        @page {
-          size: A4 landscape;
-          margin: 0;
-        }
-
-        /* Print Media Overrides */
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-          .print-area, .print-area * {
-            visibility: visible !important;
-          }
-          .print-area {
-            position: fixed !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 297mm !important;
-            height: 210mm !important;
-            margin: 0 !important;
-            padding: 32px !important;
-            background: #ffffff !important;
-            color: #000000 !important;
-            box-shadow: none !important;
-            border: none !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          .no-print {
-            display: none !important;
-          }
         }
       `}} />
 
@@ -313,7 +381,7 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
 
       {/* Preview Area Panel */}
       <div className="flex-1 bg-zinc-900 p-4 sm:p-8 overflow-y-auto flex justify-center items-start">
-        <div className="print-area w-[1000px] h-[800px] bg-white border-[6px] border-[#d4af37] p-8 text-black relative flex flex-col justify-between font-luxury-outfit select-none shadow-2xl">
+        <div id="print-area-container" className="print-area w-[1000px] h-[800px] bg-white border-[6px] border-[#d4af37] p-8 text-black relative flex flex-col justify-between font-luxury-outfit select-none shadow-2xl">
           
           {/* Header Curved Ribbon details */}
           <div className="absolute top-0 right-0 w-[330px] h-[160px] bg-zinc-950 rounded-bl-[160px] border-l-[3px] border-b-[3px] border-[#d4af37] text-white p-5 pl-14 pt-4 flex flex-col gap-1 font-luxury-outfit text-[11px]">
