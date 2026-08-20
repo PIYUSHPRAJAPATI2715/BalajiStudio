@@ -112,21 +112,27 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
           font-family: 'Outfit', sans-serif;
         }
 
+        @page {
+          size: A4 landscape;
+          margin: 0;
+        }
+
         /* Print Media Overrides */
         @media print {
           body * {
             visibility: hidden;
           }
           .print-area, .print-area * {
-            visibility: visible;
+            visibility: visible !important;
           }
           .print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 297mm; /* Full width for high-res landscape A4 */
-            height: 210mm;
-            margin: 0;
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 297mm !important;
+            height: 210mm !important;
+            margin: 0 !important;
+            padding: 32px !important;
             background: #ffffff !important;
             color: #000000 !important;
             box-shadow: none !important;
@@ -306,7 +312,7 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
       </div>
 
       {/* Preview Area Panel */}
-      <div className="flex-1 bg-zinc-900 p-4 sm:p-8 overflow-y-auto flex justify-center items-start no-print">
+      <div className="flex-1 bg-zinc-900 p-4 sm:p-8 overflow-y-auto flex justify-center items-start">
         <div className="print-area w-[1000px] h-[800px] bg-white border-[6px] border-[#d4af37] p-8 text-black relative flex flex-col justify-between font-luxury-outfit select-none shadow-2xl">
           
           {/* Header Curved Ribbon details */}
