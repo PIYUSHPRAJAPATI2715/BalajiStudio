@@ -9,9 +9,10 @@ import {
   ChevronDown, RefreshCw, Bell, User, Menu, ChevronRight, Mail,
   Phone, MapPin, Camera, Heart, Video, Home, Gift, Baby, Zap,
   Shield, Key, Save, BarChart3, Users, ExternalLink, ArrowUpRight,
-  ArrowDownRight, Loader2, ImageOff, StarOff
+  ArrowDownRight, Loader2, ImageOff, StarOff, FileText
 } from 'lucide-react';
 import { api } from '@/lib/api';
+import DocumentGenerator from '@/components/DocumentGenerator';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Admin = { id: string; username: string; displayName: string; lastLogin: string };
@@ -281,6 +282,7 @@ function BookingsTab({ token }: { token: string }) {
   const [showForm, setShowForm] = useState(false);
   const [editBooking, setEditBooking] = useState<Booking | null>(null);
   const [viewBooking, setViewBooking] = useState<Booking | null>(null);
+  const [docGeneratorBooking, setDocGeneratorBooking] = useState<Booking | null>(null);
   const [formLoading, setFormLoading] = useState(false);
   const [locationSuggestions, setLocationSuggestions] = useState<any[]>([]);
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
@@ -537,7 +539,7 @@ function BookingsTab({ token }: { token: string }) {
               </div>
             )}
             {viewBooking.totalAmount > 0 && (
-              <div>
+              <div className="pb-2">
                 <div className="flex justify-between text-xs text-gray-400 mb-1">
                   <span>Payment Progress</span>
                   <span>{Math.round((viewBooking.receivedAmount / viewBooking.totalAmount) * 100)}%</span>
@@ -548,9 +550,29 @@ function BookingsTab({ token }: { token: string }) {
                 </div>
               </div>
             )}
+            
+            <div className="pt-4 border-t border-white/5">
+              <button
+                type="button"
+                onClick={() => {
+                  setDocGeneratorBooking(viewBooking);
+                  setViewBooking(null);
+                }}
+                className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold transition-all flex items-center justify-center gap-2"
+              >
+                <FileText className="w-4 h-4" /> Generate Invoice / Bill
+              </button>
+            </div>
           </div>
         )}
       </Modal>
+
+      {docGeneratorBooking && (
+        <DocumentGenerator
+          booking={docGeneratorBooking}
+          onClose={() => setDocGeneratorBooking(null)}
+        />
+      )}
     </div>
   );
 }
