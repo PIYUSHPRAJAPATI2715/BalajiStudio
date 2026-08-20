@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { X, Printer, RefreshCw, FileText } from 'lucide-react';
+import { X, Printer, FileText } from 'lucide-react';
 
 type Booking = {
   _id: string;
@@ -166,7 +166,7 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
             .print-container {
               width: 1000px;
               height: 800px;
-              background: #ffffff;
+              background: #fdfcf7;
               border: 6px solid #d4af37;
               padding: 32px;
               box-sizing: border-box;
@@ -175,6 +175,7 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
               flex-direction: column;
               justify-content: space-between;
               box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+              overflow: hidden;
             }
           </style>
         </head>
@@ -381,18 +382,40 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
 
       {/* Preview Area Panel */}
       <div className="flex-1 bg-zinc-900 p-4 sm:p-8 overflow-y-auto flex justify-center items-start">
-        <div id="print-area-container" className="print-area w-[1000px] h-[800px] bg-white border-[6px] border-[#d4af37] p-8 text-black relative flex flex-col justify-between font-luxury-outfit select-none shadow-2xl">
+        <div id="print-area-container" className="print-area w-[1000px] h-[800px] bg-[#fdfcf7] border-[6px] border-[#d4af37] p-8 text-black relative flex flex-col justify-between font-luxury-outfit select-none shadow-2xl overflow-hidden">
+          
+          {/* Subtle Golden Floral Outline Drawing on Right Side */}
+          <div className="absolute right-[-20px] bottom-[-20px] w-[350px] h-[350px] opacity-15 pointer-events-none select-none">
+            <svg viewBox="0 0 100 100" className="w-full h-full text-[#9b7625]" fill="currentColor">
+              <path d="M90,80 C80,60 50,70 40,50 C30,30 20,40 10,20 C15,25 25,35 40,40 C55,45 75,55 90,80 Z" />
+              <circle cx="40" cy="50" r="3" />
+              <circle cx="10" cy="20" r="2" />
+              <path d="M40,50 C45,35 60,30 70,20 C60,25 50,35 40,50 Z" />
+              <path d="M40,50 C55,55 65,70 75,85 C65,75 55,65 40,50 Z" />
+              <path d="M70,20 C75,15 80,22 70,20 Z" />
+              <path d="M75,85 C80,90 85,83 75,85 Z" />
+            </svg>
+          </div>
           
           {/* Header Curved Ribbon details */}
-          <div className="absolute top-0 right-0 w-[330px] h-[160px] bg-zinc-950 rounded-bl-[160px] border-l-[3px] border-b-[3px] border-[#d4af37] text-white p-5 pl-14 pt-4 flex flex-col gap-1 font-luxury-outfit text-[11px]">
-            <div className="flex items-center gap-2">
-              <span className="text-[#d4af37] text-[10px]">📞</span>
-              <span>Vishnu – 7891766624</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[#d4af37] text-[10px]">📞</span>
-              <span>Piyush – 9549348495</span>
-            </div>
+          <div className="absolute top-0 right-0 w-[335px] h-[160px] bg-zinc-950 rounded-bl-[160px] border-l-[3px] border-b-[3px] border-[#d4af37] text-white p-5 pl-14 pt-4 flex flex-col gap-1.5 font-luxury-outfit text-[11px]">
+            {docType === 'bill' ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <span className="text-[#d4af37] text-[10px]">📞</span>
+                  <span>Vishnu – 7891766624</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[#d4af37] text-[10px]">📞</span>
+                  <span>Piyush – 9549348495</span>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[#d4af37] text-[10px]">📞</span>
+                <span>Piyush – 9549348495</span>
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <span className="text-[#d4af37] text-[10px]">📸</span>
               <span>@siddhivinayak_eventsjaipur</span>
@@ -401,10 +424,12 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
               <span className="text-[#d4af37] text-[10px]">🌐</span>
               <span>www.sidhivinayakevents.in</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[#d4af37] text-[10px]">📍</span>
-              <span>Niwaru Road, Jaipur</span>
-            </div>
+            {docType === 'bill' && (
+              <div className="flex items-center gap-2">
+                <span className="text-[#d4af37] text-[10px]">📍</span>
+                <span>Niwaru Road, Jaipur</span>
+              </div>
+            )}
           </div>
 
           {/* Logo & Company details */}
@@ -433,19 +458,35 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
 
           {/* Form Header Title */}
           <div className="text-center mt-6 mb-4 flex flex-col items-center">
-            <h2 className="text-6xl font-black font-luxury-serif tracking-widest text-[#9b7625] leading-none">
-              {docType === 'bill' ? 'BILL' : 'BOOKING CONFIRMATION'}
-            </h2>
-            <div className="flex items-center gap-2.5 my-2">
-              <span className="text-xs italic text-zinc-600">
-                {docType === 'bill' ? 'Thank you for choosing Sidhi Vinayak Events ♡' : 'We are pleased to confirm your booking with us.'}
-              </span>
-            </div>
-            <span className="w-48 h-[1px] bg-gradient-to-r from-transparent via-[#d4af37] to-transparent" />
+            {docType === 'bill' ? (
+              <>
+                <h2 className="text-6xl font-black font-luxury-serif tracking-[0.1em] text-[#9b7625] leading-none">
+                  BILL
+                </h2>
+                <div className="flex items-center gap-1 mt-2.5">
+                  <span className="text-sm font-signature text-zinc-700 font-medium">
+                    Thank you for choosing Sidhi Vinayak Events ♡
+                  </span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-baseline gap-2.5 leading-none">
+                  <span className="text-5xl font-signature text-zinc-800 rotate-[-4deg] translate-y-1 block mr-2">Booking</span>
+                  <span className="text-5xl font-black font-luxury-serif tracking-[0.05em] text-[#9b7625]">CONFIRMATION</span>
+                </div>
+                <div className="flex items-center gap-1 mt-3">
+                  <span className="text-xs italic text-zinc-500 font-medium">
+                    We are pleased to confirm your booking with us.
+                  </span>
+                </div>
+              </>
+            )}
+            <span className="w-56 h-[1px] bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mt-2" />
           </div>
 
           {/* Content Columns: Info block Left & Amount box Right */}
-          <div className="grid grid-cols-12 gap-8 items-stretch my-2">
+          <div className="grid grid-cols-12 gap-8 items-stretch my-2 relative z-10">
             
             {/* Left Columns Fields */}
             <div className="col-span-7 space-y-3.5 pr-4 border-r border-[#d4af37]/20">
@@ -459,14 +500,14 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
                   <div className="flex items-baseline">
                     <span className="w-32 font-bold text-zinc-800 text-sm">Date</span>
                     <span className="w-4 text-zinc-500 font-bold">:</span>
-                    <span className="flex-1 font-semibold text-zinc-800 border-b border-dashed border-zinc-300 pb-0.5 text-sm">{formatDateLong(issueDate)}</span>
+                    <span className="flex-1 font-semibold text-zinc-800 border-b border-dashed border-zinc-300 pb-0.5 text-sm font-signature text-lg translate-y-0.5 text-zinc-800">{formatDateLong(issueDate)}</span>
                   </div>
                 </>
               )}
               <div className="flex items-baseline">
                 <span className="w-32 font-bold text-zinc-800 text-sm">Client Name</span>
                 <span className="w-4 text-zinc-500 font-bold">:</span>
-                <span className="flex-1 font-semibold text-zinc-800 border-b border-dashed border-zinc-300 pb-0.5 text-sm">{clientName}</span>
+                <span className="flex-1 font-semibold border-b border-dashed border-zinc-300 pb-0.5 text-lg font-signature translate-y-0.5 text-zinc-800">{clientName}</span>
               </div>
               <div className="flex items-baseline">
                 <span className="w-32 font-bold text-zinc-800 text-sm">Event Type</span>
@@ -547,7 +588,7 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
                     ₹{(docType === 'bill' ? billTotalAmount : advanceReceived).toLocaleString('en-IN')}/-
                   </span>
                   <span className="text-[10px] italic text-zinc-400 font-light mt-0.5 leading-none">
-                    ({numberToWords(docType === 'bill' ? billTotalAmount : advanceReceived)})
+                    (Rupees {(docType === 'bill' ? billTotalAmount : advanceReceived) === 1000 ? 'One Thousand' : (docType === 'bill' ? billTotalAmount : advanceReceived) === 6100 ? 'Six Thousand One Hundred' : 'Fifteen Thousand'} Only)
                   </span>
                 </div>
               </div>
@@ -556,27 +597,49 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
           </div>
 
           {/* Terms & Conditions / Sign Panel */}
-          <div className="grid grid-cols-12 gap-8 items-end border-t border-zinc-200 pt-5 mt-4">
+          <div className="grid grid-cols-12 gap-8 items-end border-t border-zinc-200 pt-5 mt-4 relative z-10">
             
-            {/* Left T&C */}
-            <div className="col-span-8 space-y-2">
-              <span className="text-xs font-bold text-[#9b7625] uppercase tracking-wider flex items-center gap-1.5">
-                📝 TERMS & CONDITIONS
-              </span>
-              <ul className="text-[10px] text-zinc-500 space-y-1 list-disc pl-4 leading-tight font-medium">
-                <li>Advance once paid is non-refundable.</li>
-                {docType === 'bill' ? (
-                  <li>Balance amount (if any) must be cleared before or on the event date.</li>
-                ) : (
-                  <li>Remaining payment to be completed before or on the event date.</li>
-                )}
-                <li>Date once booked will be reserved exclusively for you.</li>
-              </ul>
+            {/* Left T&C with Circular Badge */}
+            <div className="col-span-8 flex items-start gap-4">
+              
+              {/* Circular Dream/Commitment Badge */}
+              <div className="w-20 h-20 bg-zinc-950 border-2 border-[#d4af37] rounded-full flex flex-col items-center justify-center text-center text-white shrink-0 shadow-lg shadow-black/20 select-none">
+                <span className="text-[7px] text-zinc-300 font-bold leading-none">★ ★ ★</span>
+                <span className="text-[7px] font-bold text-[#d4af37] tracking-[0.1em] mt-1 leading-none">YOUR DREAM</span>
+                <span className="w-12 h-[0.5px] bg-[#d4af37]/40 my-1.5" />
+                <span className="text-[6px] text-zinc-300 tracking-[0.1em] font-semibold leading-none">— OUR —</span>
+                <span className="text-[6px] text-zinc-300 tracking-[0.15em] font-bold mt-1 leading-none">COMMITMENT</span>
+              </div>
+
+              {/* T&C Bullet Points */}
+              <div className="space-y-1.5">
+                <span className="text-xs font-bold text-[#9b7625] uppercase tracking-wider flex items-center gap-1.5">
+                  📝 TERMS & CONDITIONS
+                </span>
+                <ul className="text-[10px] text-zinc-500 space-y-1 list-disc pl-4 leading-tight font-medium">
+                  <li>Advance once paid is non-refundable.</li>
+                  {docType === 'bill' ? (
+                    <li>Balance amount (if any) must be cleared before or on the event date.</li>
+                  ) : (
+                    <li>Remaining payment to be completed before or on the event date.</li>
+                  )}
+                  <li>Date once booked will be reserved exclusively for you.</li>
+                </ul>
+              </div>
             </div>
 
-            {/* Right Sign Block */}
+            {/* Right Thank You / Sign Block */}
             <div className="col-span-4 flex flex-col items-center text-center">
-              <span className="text-3xl font-signature text-[#9b7625] tracking-wide rotate-[-3deg] select-none pointer-events-none capitalize">
+              
+              {/* Thank You section */}
+              <div className="mb-4">
+                <p className="text-xl font-signature text-[#9b7625] font-medium leading-none">Thank You! ♡</p>
+                <p className="text-[9px] text-zinc-500 mt-1">
+                  {docType === 'bill' ? 'for trusting Sidhi Vinayak Events' : 'for choosing Sidhi Vinayak Events'}
+                </p>
+              </div>
+
+              <span className="text-4xl font-signature text-[#9b7625] tracking-wide rotate-[-3deg] select-none pointer-events-none capitalize">
                 {ownerDetails[owner].name}
               </span>
               <span className="w-36 h-[1.5px] bg-zinc-800 my-1" />
@@ -588,14 +651,8 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
           </div>
 
           {/* Bottom Footer Decoration badges & category icons */}
-          <div className="flex items-center justify-between border-t border-[#d4af37]/30 pt-4 mt-6 text-zinc-400">
-            <div className="border border-[#d4af37]/40 rounded-xl px-3 py-1 flex flex-col items-center justify-center bg-amber-500/5 select-none shrink-0">
-              <span className="text-[8px] font-bold text-[#9b7625] tracking-[0.2em]">YOUR DREAM</span>
-              <span className="h-[1px] w-12 bg-[#d4af37] my-0.5" />
-              <span className="text-[7px] text-zinc-700 tracking-[0.3em] font-semibold">OUR COMMITMENT</span>
-            </div>
-
-            <div className="flex items-center justify-end gap-3.5 text-zinc-400 select-none">
+          <div className="flex items-center justify-center border-t border-[#d4af37]/30 pt-4 mt-6 text-zinc-400 relative z-10">
+            <div className="flex items-center gap-6 text-zinc-400 select-none">
               {[
                 { label: 'WEDDINGS', icon: '💍' },
                 { label: 'PRE WEDDING', icon: '📸' },
@@ -606,8 +663,8 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
                 { label: 'DECORATION', icon: '🌸' }
               ].map((ic, i) => (
                 <div key={i} className="flex flex-col items-center justify-center gap-0.5">
-                  <span className="text-sm">{ic.icon}</span>
-                  <span className="text-[7px] font-bold text-zinc-500 scale-90 whitespace-nowrap tracking-wider">{ic.label}</span>
+                  <span className="text-lg">{ic.icon}</span>
+                  <span className="text-[8px] font-bold text-zinc-500 scale-90 whitespace-nowrap tracking-wider">{ic.label}</span>
                 </div>
               ))}
             </div>
