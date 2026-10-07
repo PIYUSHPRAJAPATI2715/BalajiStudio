@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { format, parseISO, isValid } from 'date-fns';
 import {
   Lock, LogOut, LayoutDashboard, CalendarDays, Star, MessageSquare, Image,
@@ -370,6 +370,17 @@ function BookingsTab({ token }: { token: string }) {
 
   useEffect(() => { load(); }, [load]);
 
+  const filteredBookings = useMemo(() => {
+    return bookings.filter(b => {
+      const matchStatus = filter === 'all' || b.status === filter;
+      const mgr = (b.assignedTo || 'Piyush').toLowerCase();
+      const matchMgr = assignedFilter === 'all' || mgr === assignedFilter.toLowerCase();
+      const br = (b.branch || 'Jaipur').toLowerCase();
+      const matchBranch = branchFilter === 'all' || br === branchFilter.toLowerCase();
+      return matchStatus && matchMgr && matchBranch;
+    });
+  }, [bookings, filter, assignedFilter, branchFilter]);
+
   const openEdit = (b: Booking) => {
     setEditBooking(b);
     const isStandardType = EVENT_TYPES.includes(b.eventType);
@@ -518,8 +529,8 @@ ${b.notes ? `\n📝 *Notes:* ${b.notes}` : ''}
       {/* Table */}
       {loading ? (
         <div className="flex items-center justify-center h-48"><Loader2 className="w-7 h-7 text-amber-500 animate-spin" /></div>
-      ) : bookings.length === 0 ? (
-        <div className="text-center py-20 text-gray-500"><CalendarDays className="w-12 h-12 mx-auto mb-3 opacity-30" /><p>No bookings found</p></div>
+      ) : filteredBookings.length === 0 ? (
+        <div className="text-center py-20 text-gray-500"><CalendarDays className="w-12 h-12 mx-auto mb-3 opacity-30" /><p>No bookings found matching filters</p></div>
       ) : (
         <div className="bg-zinc-900/80 border border-white/10 rounded-2xl overflow-hidden">
           <div className="overflow-x-auto">
@@ -536,7 +547,7 @@ ${b.notes ? `\n📝 *Notes:* ${b.notes}` : ''}
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {bookings.map(b => {
+                {filteredBookings.map(b => {
                   const Icon = EVENT_ICONS[b.eventType] || CalendarDays;
                   return (
                     <tr key={b._id} className="hover:bg-white/5 transition-colors group">

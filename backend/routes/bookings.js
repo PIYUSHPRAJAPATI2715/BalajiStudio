@@ -18,11 +18,29 @@ router.get('/', protect, async (req, res) => {
     }
 
     if (assignedTo && assignedTo !== 'all') {
-      filter.assignedTo = assignedTo;
+      if (assignedTo.toLowerCase() === 'piyush') {
+        filter.$or = [
+          { assignedTo: 'Piyush' },
+          { assignedTo: { $exists: false } },
+          { assignedTo: null },
+          { assignedTo: '' },
+        ];
+      } else {
+        filter.assignedTo = new RegExp(`^${assignedTo}$`, 'i');
+      }
     }
 
     if (branch && branch !== 'all') {
-      filter.branch = branch;
+      if (branch.toLowerCase() === 'jaipur') {
+        filter.$or = [
+          { branch: 'Jaipur' },
+          { branch: { $exists: false } },
+          { branch: null },
+          { branch: '' },
+        ];
+      } else {
+        filter.branch = new RegExp(`^${branch}$`, 'i');
+      }
     }
 
     if (month && year) {

@@ -53,7 +53,7 @@ router.get('/', protect, async (req, res) => {
       Booking.aggregate([
         {
           $group: {
-            _id: '$branch',
+            _id: { $ifNull: ['$branch', 'Jaipur'] },
             total: { $sum: '$totalAmount' },
             received: { $sum: '$receivedAmount' },
             count: { $sum: 1 },
@@ -88,7 +88,12 @@ router.get('/', protect, async (req, res) => {
     };
 
     (branchRevenueAgg || []).forEach(b => {
-      const key = b._id === 'Shahpura' ? 'shahpura' : b._id === 'Neem Ka Thana' ? 'neemKaThana' : 'jaipur';
+      const branchName = (b._id || 'Jaipur').toString().trim();
+      const key = branchName === 'Shahpura' 
+        ? 'shahpura' 
+        : branchName === 'Neem Ka Thana' || branchName === 'NeemKaThana' 
+          ? 'neemKaThana' 
+          : 'jaipur';
       branchMap[key].total += b.total || 0;
       branchMap[key].received += b.received || 0;
       branchMap[key].count += b.count || 0;
