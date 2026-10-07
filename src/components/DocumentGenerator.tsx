@@ -106,6 +106,7 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
   const [advanceReceived, setAdvanceReceived] = useState(booking.receivedAmount || 0);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
   const [downloadingJPG, setDownloadingJPG] = useState(false);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
   const [scale, setScale] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -253,14 +254,42 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
       const cleanFileName = clientName ? clientName.trim().replace(/\s+/g, '_') : 'Client';
       const fileName = `${docType === 'bill' ? 'Invoice' : 'Booking_Confirmation'}_SVE_${cleanFileName}.jpg`;
 
+      // Convert to blob for native file operations
+      const res = await fetch(imgData);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const jpgFile = new File([blob], fileName, { type: 'image/jpeg' });
+
+      // 1. Try Native Web Share API on Mobile (Pops open native "Save to Photos/Gallery" on iOS & Android)
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [jpgFile] })) {
+        await navigator.share({
+          files: [jpgFile],
+          title: fileName,
+        });
+        setDownloadingJPG(false);
+        return;
+      }
+
+      // 2. Trigger Blob URL link click download
       const a = document.createElement('a');
-      a.href = imgData;
+      a.href = blobUrl;
       a.download = fileName;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+
+      // 3. Open interactive preview modal as a fail-safe for mobile browsers
+      setPreviewImageUrl(imgData);
     } catch (err) {
       console.error('Direct JPG error:', err);
+      if (element) {
+        try {
+          const fallbackCanvas = await html2canvas(element, { scale: 1.5, useCORS: true, backgroundColor: '#ffffff' });
+          setPreviewImageUrl(fallbackCanvas.toDataURL('image/jpeg', 0.9));
+        } catch (e) {
+          console.error('Fallback canvas error:', e);
+        }
+      }
     } finally {
       setDownloadingJPG(false);
     }
@@ -1046,6 +1075,50 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
           </div>
         </div>
       </div>
+
+      {/* Mobile Image Save Modal Overlay */}
+      {previewImageUrl && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md p-4 flex flex-col items-center justify-center overflow-y-auto">
+          <div className="bg-zinc-900 border border-amber-500/40 rounded-2xl max-w-lg w-full p-5 text-white flex flex-col gap-4 shadow-2xl relative">
+            <button 
+              onClick={() => setPreviewImageUrl(null)}
+              className="absolute top-3 right-3 p-2 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-all"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="text-center pt-2">
+              <h3 className="text-lg font-bold text-amber-400">🖼️ Invoice Image Ready!</h3>
+              <p className="text-xs text-gray-300 mt-1 leading-relaxed">
+                If the download didn't start automatically on your phone, <strong>press and hold</strong> the image below to tap <strong>"Save to Photos / Save Image"</strong>.
+              </p>
+            </div>
+
+            <div className="border border-white/10 rounded-xl overflow-hidden bg-white max-h-[55vh] overflow-y-auto shadow-inner">
+              {/* eslint-disable-next-html-element-for-to-js-call */}
+              <img src={previewImageUrl} alt="Invoice Preview" className="w-full h-auto object-contain" />
+            </div>
+
+            <div className="flex gap-2.5 pt-1">
+              <a
+                href={previewImageUrl}
+                download={`${docType === 'bill' ? 'Invoice' : 'Booking_Confirmation'}_SVE_${clientName || 'Client'}.jpg`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 py-3 bg-gradient-gold hover:bg-amber-400 text-black font-bold text-center rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2"
+              >
+                <Download className="w-4 h-4" /> Save / Open Image
+              </a>
+              <button
+                onClick={() => setPreviewImageUrl(null)}
+                className="px-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-semibold transition-all"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
