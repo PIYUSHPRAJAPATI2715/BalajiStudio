@@ -105,6 +105,7 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
   
   const [advanceReceived, setAdvanceReceived] = useState(booking.receivedAmount || 0);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
+  const [downloadingJPG, setDownloadingJPG] = useState(false);
 
   const [scale, setScale] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -186,11 +187,11 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
 
     const element = document.getElementById('print-area-container');
     const cleanFileName = clientName ? clientName.trim().replace(/\s+/g, '_') : 'Client';
-    const fileName = `${docType === 'bill' ? 'Invoice' : 'Booking_Confirmation'}_SVE_${cleanFileName}.pdf`;
+    const jpgFileName = `${docType === 'bill' ? 'Invoice' : 'Booking_Confirmation'}_SVE_${cleanFileName}.jpg`;
 
     if (element) {
       try {
-        setDownloadingPDF(true);
+        setDownloadingJPG(true);
         const canvas = await html2canvas(element, {
           scale: 2,
           useCORS: true,
@@ -199,46 +200,70 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
           backgroundColor: '#ffffff'
         });
 
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: 'a4',
-        });
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const res = await fetch(imgData);
+        const blob = await res.blob();
+        const jpgFile = new File([blob], jpgFileName, { type: 'image/jpeg' });
 
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, Math.min(imgHeight, 297));
-
-        const pdfBlob = pdf.output('blob');
-        const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
-
-        // Try Web Share API (native share dialog on mobile browsers to attach actual file directly to WhatsApp)
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [jpgFile] })) {
           await navigator.share({
-            files: [pdfFile],
+            files: [jpgFile],
             title: `${docType === 'bill' ? 'Invoice' : 'Booking Confirmation'} - ${clientName}`,
             text: msg,
           });
-          setDownloadingPDF(false);
+          setDownloadingJPG(false);
           return;
         }
 
-        // On desktop/unsupported browser, download PDF file directly to device
-        pdf.save(fileName);
+        const a = document.createElement('a');
+        a.href = imgData;
+        a.download = jpgFileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       } catch (e) {
-        console.error('Error generating PDF for WhatsApp:', e);
+        console.error('Error generating JPG for WhatsApp:', e);
       } finally {
-        setDownloadingPDF(false);
+        setDownloadingJPG(false);
       }
     }
 
-    // Open WhatsApp with text
     const url = phoneClean 
       ? `https://api.whatsapp.com/send?phone=${phoneClean}&text=${encodeURIComponent(msg)}`
       : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
 
     window.open(url, '_blank');
+  };
+
+  const handleDownloadJPG = async () => {
+    const element = document.getElementById('print-area-container');
+    if (!element) return;
+    setDownloadingJPG(true);
+
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const cleanFileName = clientName ? clientName.trim().replace(/\s+/g, '_') : 'Client';
+      const fileName = `${docType === 'bill' ? 'Invoice' : 'Booking_Confirmation'}_SVE_${cleanFileName}.jpg`;
+
+      const a = document.createElement('a');
+      a.href = imgData;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error('Direct JPG error:', err);
+    } finally {
+      setDownloadingJPG(false);
+    }
   };
 
   const handleDownloadPDF = async () => {
@@ -255,19 +280,15 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
         backgroundColor: '#ffffff'
       });
 
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      // Guarantee exact 1 Single Page A4 PDF (210mm x 297mm)
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
         format: 'a4',
       });
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = pdfWidth;
-      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, Math.min(imgHeight, pdfHeight));
+      pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
 
       const cleanFileName = clientName ? clientName.trim().replace(/\s+/g, '_') : 'Client';
       const fileName = `${docType === 'bill' ? 'Invoice' : 'Booking_Confirmation'}_SVE_${cleanFileName}.pdf`;
@@ -632,19 +653,35 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
         </div>
 
         {/* Action Buttons */}
-        <div className="space-y-2.5 mt-4">
+        <div className="space-y-2 mt-4">
           <button
-            onClick={handleDownloadPDF}
-            disabled={downloadingPDF}
+            onClick={handleDownloadJPG}
+            disabled={downloadingJPG}
             className="w-full py-3.5 bg-gradient-gold hover:bg-amber-400 text-black font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 transition-all active:scale-95 disabled:opacity-50"
           >
-            {downloadingPDF ? (
+            {downloadingJPG ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" /> Generating PDF...
+                <Loader2 className="w-4 h-4 animate-spin" /> Saving Image (JPG)...
               </>
             ) : (
               <>
-                <Download className="w-4 h-4" /> Direct Download PDF Invoice
+                <Download className="w-4 h-4" /> Download JPG Image (1-Click)
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={handleDownloadPDF}
+            disabled={downloadingPDF}
+            className="w-full py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-bold text-xs rounded-xl flex items-center justify-center gap-2 border border-amber-500/30 transition-all disabled:opacity-50"
+          >
+            {downloadingPDF ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating PDF...
+              </>
+            ) : (
+              <>
+                <FileText className="w-3.5 h-3.5" /> Download PDF (1 Page Only)
               </>
             )}
           </button>
@@ -658,9 +695,9 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
           
           <button
             onClick={handlePrint}
-            className="w-full py-2.5 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-2 border border-white/10 transition-all"
+            className="w-full py-2 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-2 border border-white/10 transition-all"
           >
-            <Printer className="w-3.5 h-3.5" /> Print / Save via Browser
+            <Printer className="w-3.5 h-3.5" /> Print / Browser Dialog
           </button>
         </div>
       </div>
@@ -677,8 +714,8 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
           }}
           className="transition-transform duration-100"
         >
-          {/* Exact Template Card Matching Image */}
-          <div id="print-area-container" className="print-area w-[1000px] min-h-[1320px] bg-[#ffffff] border-[6px] border-[#c49838] p-8 text-black relative flex flex-col justify-between font-luxury-outfit select-none shadow-2xl overflow-hidden">
+          {/* Exact Template Card Matching Image - Fixed A4 Ratio (1000px x 1414px) */}
+          <div id="print-area-container" className="print-area w-[1000px] h-[1414px] bg-[#ffffff] border-[6px] border-[#c49838] p-8 text-black relative flex flex-col justify-between font-luxury-outfit select-none shadow-2xl overflow-hidden">
             
             {/* Inner Gold Frame Border */}
             <div className="absolute inset-2 border border-[#c49838]/30 pointer-events-none" />
