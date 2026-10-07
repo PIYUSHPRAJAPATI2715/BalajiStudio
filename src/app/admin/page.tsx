@@ -474,13 +474,20 @@ ${b.notes ? `\n📝 *Notes:* ${b.notes}` : ''}
   return (
     <div className="space-y-6">
       {/* Controls */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Status Tabs */}
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap bg-zinc-900/90 p-1.5 rounded-2xl border border-white/10">
             {(['all', 'upcoming', 'completed', 'cancelled'] as const).map(f => (
-              <button key={f} onClick={() => setFilter(f)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all ${filter === f ? 'bg-amber-500 text-black font-bold' : 'bg-zinc-800 text-gray-400 hover:text-white'}`}>
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`px-5 py-2 rounded-xl text-xs font-bold capitalize transition-all ${
+                  filter === f
+                    ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-black shadow-lg shadow-amber-500/20 scale-[1.02]'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
                 {f}
               </button>
             ))}
@@ -488,48 +495,71 @@ ${b.notes ? `\n📝 *Notes:* ${b.notes}` : ''}
 
           {/* Action Buttons */}
           <div className="flex gap-2 w-full sm:w-auto">
-            <div className="relative flex-1 sm:w-56">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search bookings..."
-                className="w-full pl-9 pr-4 py-2 bg-zinc-800 border border-white/10 rounded-xl text-sm text-white outline-none focus:border-amber-500/50" />
+            <div className="relative flex-1 sm:w-64">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search bookings..."
+                className="w-full pl-10 pr-4 py-2.5 bg-zinc-900/90 border border-white/10 rounded-2xl text-xs text-white outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-all placeholder-gray-500"
+              />
             </div>
-            <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl text-sm transition-all shadow-md">
-              <Plus className="w-4 h-4" /> Add Booking
+            <button
+              onClick={openAdd}
+              className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-400 hover:brightness-110 text-black font-extrabold rounded-2xl text-xs transition-all shadow-lg shadow-amber-500/20 active:scale-95 whitespace-nowrap"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" /> Add Booking
             </button>
-            <button onClick={load} className="p-2 bg-zinc-800 border border-white/10 rounded-xl text-gray-400 hover:text-white transition-colors"><RefreshCw className="w-4 h-4" /></button>
+            <button
+              onClick={load}
+              className="p-2.5 bg-zinc-900/90 border border-white/10 rounded-2xl text-gray-400 hover:text-white hover:border-white/20 transition-all active:rotate-180"
+              title="Refresh"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
-        {/* Manager & Branch Dropdown Filters */}
-        <div className="flex flex-wrap gap-4 items-center bg-zinc-900/80 p-3 rounded-2xl border border-white/10">
-          <div className="flex items-center gap-2">
-            <User className="w-4 h-4 text-amber-500" />
-            <span className="text-xs text-gray-400 font-semibold uppercase">Manager:</span>
-            <select
-              value={assignedFilter}
-              onChange={e => setAssignedFilter(e.target.value as any)}
-              className="bg-zinc-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-amber-500"
-            >
-              <option value="all">All Managers</option>
-              <option value="Piyush">Piyush</option>
-              <option value="Vishnu">Vishnu</option>
-              <option value="Manoj">Manoj</option>
-            </select>
+        {/* Manager & Branch Dropdown Filters Toolbar */}
+        <div className="flex flex-wrap gap-4 items-center justify-between bg-zinc-900/90 p-3.5 rounded-2xl border border-amber-500/20 shadow-md">
+          <div className="flex flex-wrap gap-6 items-center">
+            <div className="flex items-center gap-2.5">
+              <span className="p-1.5 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                <User className="w-4 h-4 text-amber-400" />
+              </span>
+              <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Manager:</span>
+              <select
+                value={assignedFilter}
+                onChange={e => setAssignedFilter(e.target.value as any)}
+                className="bg-zinc-950 border border-white/10 rounded-xl px-3 py-1.5 text-xs font-bold text-amber-400 outline-none focus:border-amber-500 cursor-pointer"
+              >
+                <option value="all">👑 All Managers</option>
+                <option value="Piyush">Piyush</option>
+                <option value="Vishnu">Vishnu</option>
+                <option value="Manoj">Manoj</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <span className="p-1.5 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                <MapPin className="w-4 h-4 text-amber-400" />
+              </span>
+              <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Branch:</span>
+              <select
+                value={branchFilter}
+                onChange={e => setBranchFilter(e.target.value as any)}
+                className="bg-zinc-950 border border-white/10 rounded-xl px-3 py-1.5 text-xs font-bold text-amber-400 outline-none focus:border-amber-500 cursor-pointer"
+              >
+                <option value="all">📍 All Branches</option>
+                <option value="Jaipur">Jaipur</option>
+                <option value="Shahpura">Shahpura</option>
+                <option value="Neem Ka Thana">Neem Ka Thana</option>
+              </select>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-amber-500" />
-            <span className="text-xs text-gray-400 font-semibold uppercase">Branch:</span>
-            <select
-              value={branchFilter}
-              onChange={e => setBranchFilter(e.target.value as any)}
-              className="bg-zinc-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-amber-500"
-            >
-              <option value="all">All Branches</option>
-              <option value="Jaipur">Jaipur</option>
-              <option value="Shahpura">Shahpura</option>
-              <option value="Neem Ka Thana">Neem Ka Thana</option>
-            </select>
+          <div className="text-xs text-gray-400 font-medium px-3 py-1 bg-black/40 rounded-xl border border-white/5">
+            Showing <span className="font-bold text-amber-400">{filteredBookings.length}</span> Bookings
           </div>
         </div>
       </div>
@@ -538,20 +568,20 @@ ${b.notes ? `\n📝 *Notes:* ${b.notes}` : ''}
       {loading ? (
         <div className="flex items-center justify-center h-48"><Loader2 className="w-7 h-7 text-amber-500 animate-spin" /></div>
       ) : filteredBookings.length === 0 ? (
-        <div className="text-center py-20 text-gray-500"><CalendarDays className="w-12 h-12 mx-auto mb-3 opacity-30" /><p>No bookings found matching filters</p></div>
+        <div className="text-center py-20 text-gray-500"><CalendarDays className="w-12 h-12 mx-auto mb-3 opacity-30 text-amber-500" /><p className="font-medium text-sm">No bookings found matching selected filters</p></div>
       ) : (
-        <div className="bg-zinc-900/80 border border-white/10 rounded-2xl overflow-hidden">
+        <div className="bg-zinc-900/90 border border-white/10 rounded-2xl overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10 bg-zinc-800/50">
-                  <th className="text-left px-4 py-3 text-gray-400 font-medium">Client</th>
-                  <th className="text-left px-4 py-3 text-gray-400 font-medium hidden md:table-cell">Event</th>
-                  <th className="text-left px-4 py-3 text-gray-400 font-medium hidden lg:table-cell">Branch & Manager</th>
-                  <th className="text-left px-4 py-3 text-gray-400 font-medium hidden lg:table-cell">Date</th>
-                  <th className="text-left px-4 py-3 text-gray-400 font-medium hidden xl:table-cell">Amount</th>
-                  <th className="text-left px-4 py-3 text-gray-400 font-medium">Status</th>
-                  <th className="text-right px-4 py-3 text-gray-400 font-medium">Actions</th>
+                <tr className="border-b border-amber-500/20 bg-zinc-950/80 uppercase text-[11px] font-extrabold text-amber-400 tracking-wider">
+                  <th className="text-left px-4 py-3.5">Client Details</th>
+                  <th className="text-left px-4 py-3.5 hidden md:table-cell">Event / Package</th>
+                  <th className="text-left px-4 py-3.5 hidden lg:table-cell">Branch & Manager</th>
+                  <th className="text-left px-4 py-3.5 hidden lg:table-cell">Event Date</th>
+                  <th className="text-left px-4 py-3.5 hidden xl:table-cell">Payment Summary</th>
+                  <th className="text-left px-4 py-3.5">Status</th>
+                  <th className="text-right px-4 py-3.5">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -559,59 +589,86 @@ ${b.notes ? `\n📝 *Notes:* ${b.notes}` : ''}
                   const Icon = EVENT_ICONS[b.eventType] || CalendarDays;
                   return (
                     <tr key={b._id} className="hover:bg-white/5 transition-colors group">
-                      <td className="px-4 py-3">
-                        <p className="font-semibold text-white">{b.clientName}</p>
-                        <p className="text-xs text-gray-400">{b.clientPhone || b.programName}</p>
+                      <td className="px-4 py-3.5">
+                        <p className="font-bold text-white text-sm hover:text-amber-400 transition-colors cursor-pointer" onClick={() => setViewBooking(b)}>
+                          {b.clientName}
+                        </p>
+                        <p className="text-xs text-amber-500/80 font-medium flex items-center gap-1 mt-0.5">
+                          {b.clientPhone ? <span>📞 {b.clientPhone}</span> : <span className="text-gray-500">{b.programName}</span>}
+                        </p>
                       </td>
-                      <td className="px-4 py-3 hidden md:table-cell">
-                        <span className="flex items-center gap-1.5 text-gray-300 font-medium">
-                          <Icon className="w-3.5 h-3.5 text-amber-500" />{b.eventType}
+                      <td className="px-4 py-3.5 hidden md:table-cell">
+                        <span className="flex items-center gap-1.5 text-zinc-200 font-bold text-xs">
+                          <Icon className="w-3.5 h-3.5 text-amber-400" />{b.eventType}
                         </span>
-                        {b.venue && <p className="text-[11px] text-gray-500">{b.venue}</p>}
+                        {b.venue && <p className="text-[11px] text-gray-400 mt-0.5">📍 {b.venue}</p>}
                       </td>
-                      <td className="px-4 py-3 hidden lg:table-cell">
-                        <select
-                          value={b.branch || 'Jaipur'}
-                          onChange={e => handleBranchChange(b._id, e.target.value)}
-                          className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20 outline-none cursor-pointer"
-                        >
-                          <option value="Jaipur" className="bg-zinc-900 text-white">Jaipur</option>
-                          <option value="Shahpura" className="bg-zinc-900 text-white">Shahpura</option>
-                          <option value="Neem Ka Thana" className="bg-zinc-900 text-white">Neem Ka Thana</option>
-                        </select>
-                        <div className="flex items-center gap-1 text-xs text-gray-400 mt-1">
-                          <span>Mgr:</span>
+                      <td className="px-4 py-3.5 hidden lg:table-cell">
+                        <div className="flex flex-col gap-1.5 items-start">
                           <select
-                            value={b.assignedTo || 'Piyush'}
-                            onChange={e => handleManagerChange(b._id, e.target.value)}
-                            className="bg-transparent border-0 text-amber-400 font-semibold text-xs outline-none cursor-pointer"
+                            value={b.branch || 'Jaipur'}
+                            onChange={e => handleBranchChange(b._id, e.target.value)}
+                            className="text-[11px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/30 focus:border-amber-400 outline-none cursor-pointer hover:bg-amber-500/20 transition-all"
                           >
-                            <option value="Piyush" className="bg-zinc-900 text-white">Piyush</option>
-                            <option value="Vishnu" className="bg-zinc-900 text-white">Vishnu</option>
-                            <option value="Manoj" className="bg-zinc-900 text-white">Manoj</option>
+                            <option value="Jaipur" className="bg-zinc-950 text-white font-sans">📍 Jaipur</option>
+                            <option value="Shahpura" className="bg-zinc-950 text-white font-sans">📍 Shahpura</option>
+                            <option value="Neem Ka Thana" className="bg-zinc-950 text-white font-sans">📍 Neem Ka Thana</option>
                           </select>
+
+                          <div className="flex items-center gap-1 bg-black/40 px-2 py-0.5 rounded-md border border-white/5">
+                            <span className="text-[10px] text-gray-400 font-semibold">Mgr:</span>
+                            <select
+                              value={b.assignedTo || 'Piyush'}
+                              onChange={e => handleManagerChange(b._id, e.target.value)}
+                              className="bg-transparent text-amber-400 font-extrabold text-xs outline-none cursor-pointer"
+                            >
+                              <option value="Piyush" className="bg-zinc-950 text-white font-sans">Piyush</option>
+                              <option value="Vishnu" className="bg-zinc-950 text-white font-sans">Vishnu</option>
+                              <option value="Manoj" className="bg-zinc-950 text-white font-sans">Manoj</option>
+                            </select>
+                          </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 hidden lg:table-cell text-gray-300 font-medium">{fmtDate(b.date)}</td>
-                      <td className="px-4 py-3 hidden xl:table-cell">
-                        <p className="text-white font-bold">{fmt(b.totalAmount)}</p>
-                        <p className="text-xs text-green-400">{fmt(b.receivedAmount)} received</p>
+                      <td className="px-4 py-3.5 hidden lg:table-cell text-gray-300 font-semibold text-xs">
+                        {fmtDate(b.date)}
                       </td>
-                      <td className="px-4 py-3">
-                        <select value={b.status} onChange={e => handleStatusChange(b._id, e.target.value)}
-                          className="text-xs bg-transparent border-0 outline-none cursor-pointer">
-                          <option value="upcoming" className="bg-zinc-900">upcoming</option>
-                          <option value="completed" className="bg-zinc-900">completed</option>
-                          <option value="cancelled" className="bg-zinc-900">cancelled</option>
+                      <td className="px-4 py-3.5 hidden xl:table-cell">
+                        <p className="text-white font-extrabold text-sm">{fmt(b.totalAmount)}</p>
+                        <p className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20 w-fit mt-0.5">
+                          {fmt(b.receivedAmount)} advance
+                        </p>
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <select
+                          value={b.status}
+                          onChange={e => handleStatusChange(b._id, e.target.value)}
+                          className={`text-xs font-extrabold px-3 py-1.5 rounded-full border outline-none cursor-pointer transition-all ${
+                            b.status === 'upcoming' 
+                              ? 'bg-blue-500/15 text-blue-400 border-blue-500/30 hover:bg-blue-500/25' 
+                              : b.status === 'completed' 
+                                ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/25' 
+                                : 'bg-rose-500/15 text-rose-400 border-rose-500/30 hover:bg-rose-500/25'
+                          }`}
+                        >
+                          <option value="upcoming" className="bg-zinc-950 text-blue-400 font-sans">upcoming</option>
+                          <option value="completed" className="bg-zinc-950 text-emerald-400 font-sans">completed</option>
+                          <option value="cancelled" className="bg-zinc-950 text-rose-400 font-sans">cancelled</option>
                         </select>
-                        <span className={`inline-flex text-xs px-2 py-0.5 rounded-full border ml-1 ${b.status === 'upcoming' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : b.status === 'completed' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'}`}>{b.status}</span>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center justify-end gap-1">
-                          <button onClick={() => setViewBooking(b)} title="View Details" className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors"><Eye className="w-4 h-4" /></button>
-                          <button onClick={() => handleWhatsAppMsg(b)} title="Send WhatsApp Confirmation" className="p-1.5 rounded-lg hover:bg-green-500/20 text-gray-400 hover:text-green-400 transition-colors"><Send className="w-4 h-4" /></button>
-                          <button onClick={() => openEdit(b)} title="Edit Booking" className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-amber-400 transition-colors"><Edit2 className="w-4 h-4" /></button>
-                          <button onClick={() => handleDelete(b._id)} title="Delete Booking" className="p-1.5 rounded-lg hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                      <td className="px-4 py-3.5">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button onClick={() => setViewBooking(b)} title="View Details" className="p-2 rounded-xl bg-white/5 hover:bg-amber-500/20 text-gray-400 hover:text-amber-400 border border-white/5 hover:border-amber-500/30 transition-all">
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => handleWhatsAppMsg(b)} title="Send WhatsApp Confirmation" className="p-2 rounded-xl bg-green-500/10 hover:bg-green-500/25 text-green-400 border border-green-500/20 transition-all shadow-xs">
+                            <Send className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => openEdit(b)} title="Edit Booking" className="p-2 rounded-xl bg-white/5 hover:bg-amber-500/20 text-gray-400 hover:text-amber-400 border border-white/5 hover:border-amber-500/30 transition-all">
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => handleDelete(b._id)} title="Delete Booking" className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-gray-400 hover:text-red-400 border border-red-500/20 transition-all">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
