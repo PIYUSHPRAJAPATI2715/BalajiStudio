@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { X, Printer, FileText, Send, Plus, Trash2, Download, Loader2 } from 'lucide-react';
+import { X, Printer, FileText, Send, Plus, Trash2, Download, Loader2, Share2 } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 type BookingItem = {
   description: string;
@@ -161,12 +163,12 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
     setItems(newItems);
   };
 
-  const handleSendWhatsApp = () => {
+  const handleSendWhatsApp = async () => {
     const phoneClean = clientPhone.replace(/\D/g, '');
-    const msg = `🎉 *BOOKING CONFIRMATION - Sidhi Vinayak Events*
+    const msg = `🎉 *${docType === 'bill' ? 'BILL INVOICE' : 'BOOKING CONFIRMATION'} - Sidhi Vinayak Events*
 ---------------------------------------------
 Dear *${clientName}*,
-We are pleased to confirm your booking!
+We are pleased to share your ${docType === 'bill' ? 'invoice bill' : 'booking confirmation'}!
 
 📅 *Event Date:* ${formatDateLong(eventDate)}
 🎉 *Event Type:* ${eventType}
@@ -182,6 +184,56 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
 ✨ *Your Dream, We Create Memories*
 🌐 Website: https://www.sidhivinayakevents.in`;
 
+    const element = document.getElementById('print-area-container');
+    const cleanFileName = clientName ? clientName.trim().replace(/\s+/g, '_') : 'Client';
+    const fileName = `${docType === 'bill' ? 'Invoice' : 'Booking_Confirmation'}_SVE_${cleanFileName}.pdf`;
+
+    if (element) {
+      try {
+        setDownloadingPDF(true);
+        const canvas = await html2canvas(element, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          backgroundColor: '#ffffff'
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4',
+        });
+
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, Math.min(imgHeight, 297));
+
+        const pdfBlob = pdf.output('blob');
+        const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
+
+        // Try Web Share API (native share dialog on mobile browsers to attach actual file directly to WhatsApp)
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+          await navigator.share({
+            files: [pdfFile],
+            title: `${docType === 'bill' ? 'Invoice' : 'Booking Confirmation'} - ${clientName}`,
+            text: msg,
+          });
+          setDownloadingPDF(false);
+          return;
+        }
+
+        // On desktop/unsupported browser, download PDF file directly to device
+        pdf.save(fileName);
+      } catch (e) {
+        console.error('Error generating PDF for WhatsApp:', e);
+      } finally {
+        setDownloadingPDF(false);
+      }
+    }
+
+    // Open WhatsApp with text
     const url = phoneClean 
       ? `https://api.whatsapp.com/send?phone=${phoneClean}&text=${encodeURIComponent(msg)}`
       : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
@@ -189,48 +241,43 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
     window.open(url, '_blank');
   };
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     const element = document.getElementById('print-area-container');
     if (!element) return;
     setDownloadingPDF(true);
 
-    const cleanFileName = clientName ? clientName.trim().replace(/\s+/g, '_') : 'Client';
-    const fileName = `${docType === 'bill' ? 'Invoice' : 'Booking_Confirmation'}_SVE_${cleanFileName}.pdf`;
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
 
-    const opt = {
-      margin: 4,
-      filename: fileName,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
 
-    const generatePDF = () => {
-      if ((window as any).html2pdf) {
-        (window as any).html2pdf().set(opt).from(element).save().then(() => {
-          setDownloadingPDF(false);
-        }).catch((err: any) => {
-          console.error('PDF error:', err);
-          setDownloadingPDF(false);
-          handlePrint();
-        });
-      } else {
-        setDownloadingPDF(false);
-        handlePrint();
-      }
-    };
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    if ((window as any).html2pdf) {
-      generatePDF();
-    } else {
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-      script.onload = () => generatePDF();
-      script.onerror = () => {
-        setDownloadingPDF(false);
-        handlePrint();
-      };
-      document.body.appendChild(script);
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, Math.min(imgHeight, pdfHeight));
+
+      const cleanFileName = clientName ? clientName.trim().replace(/\s+/g, '_') : 'Client';
+      const fileName = `${docType === 'bill' ? 'Invoice' : 'Booking_Confirmation'}_SVE_${cleanFileName}.pdf`;
+
+      pdf.save(fileName);
+    } catch (err) {
+      console.error('Direct PDF error:', err);
+      handlePrint();
+    } finally {
+      setDownloadingPDF(false);
     }
   };
 
@@ -631,8 +678,11 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
           className="transition-transform duration-100"
         >
           {/* Exact Template Card Matching Image */}
-          <div id="print-area-container" className="print-area w-[1000px] min-h-[1250px] bg-[#ffffff] border-[6px] border-[#c49838] p-8 text-black relative flex flex-col justify-between font-luxury-outfit select-none shadow-2xl overflow-hidden">
+          <div id="print-area-container" className="print-area w-[1000px] min-h-[1320px] bg-[#ffffff] border-[6px] border-[#c49838] p-8 text-black relative flex flex-col justify-between font-luxury-outfit select-none shadow-2xl overflow-hidden">
             
+            {/* Inner Gold Frame Border */}
+            <div className="absolute inset-2 border border-[#c49838]/30 pointer-events-none" />
+
             {/* Background Subtle Luxury Floral Decor */}
             <div className="absolute right-[-40px] bottom-[-40px] w-[450px] h-[450px] opacity-10 pointer-events-none select-none">
               <svg viewBox="0 0 100 100" className="w-full h-full text-[#9b7625]" fill="currentColor">
@@ -644,18 +694,18 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
               </svg>
             </div>
 
-            <div>
+            <div className="relative z-10">
               {/* Header Section */}
               <div className="flex items-start justify-between relative z-10">
                 {/* Logo & Company Details */}
                 <div className="flex items-center gap-4">
-                  <div className="relative w-24 h-24 border-2 border-[#c49838] rounded-full overflow-hidden shrink-0 flex items-center justify-center bg-[#fff8e7] shadow-md ring-2 ring-[#c49838]/30">
-                    <Image
+                  <div className="relative w-24 h-24 border-2 border-[#c49838] rounded-full overflow-hidden shrink-0 flex items-center justify-center bg-[#fff8e7] shadow-md ring-4 ring-[#c49838]/20">
+                    {/* Standard img tag for 100% reliable canvas rendering */}
+                    {/* eslint-disable-next-html-element-for-to-js-call */}
+                    <img
                       src="/logo.png"
                       alt="Sidhi Vinayak Events Logo"
-                      fill
-                      priority
-                      className="object-contain p-1"
+                      className="w-full h-full object-contain p-1.5"
                     />
                   </div>
                   <div className="flex flex-col justify-center">
@@ -674,20 +724,20 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
                 {/* Right Top Curved Crescent Black Banner */}
                 <div className="w-[340px] h-[165px] bg-[#0c0c0e] rounded-bl-[160px] border-l-[3px] border-b-[3px] border-[#c49838] text-white p-5 pl-14 pt-4 flex flex-col gap-1.5 font-luxury-outfit text-[11px] shadow-md">
                   <div className="flex items-center gap-2">
-                    <span className="text-[#c49838] text-[10px]">📞</span>
-                    <span>Vishnu - 7891766624</span>
+                    <span className="text-[#c49838] text-[11px]">📞</span>
+                    <span className="font-semibold">Vishnu - 7891766624</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[#c49838] text-[10px]">📞</span>
-                    <span>Piyush - 9549348495</span>
+                    <span className="text-[#c49838] text-[11px]">📞</span>
+                    <span className="font-semibold">Piyush - 9549348495</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[#c49838] text-[10px]">📸</span>
-                    <span>@sidhinivayak_eventsjaipur</span>
+                    <span className="text-[#c49838] text-[11px]">📸</span>
+                    <span className="text-amber-200">@sidhinivayak_eventsjaipur</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[#c49838] text-[10px]">🌐</span>
-                    <span>www.sidhivinayakevents.in</span>
+                    <span className="text-[#c49838] text-[11px]">🌐</span>
+                    <span className="text-amber-200 font-mono text-[10px]">www.sidhivinayakevents.in</span>
                   </div>
                   <div className="flex items-center gap-2 text-[10px] text-zinc-300">
                     <span className="text-[#c49838]">📍</span>
@@ -697,7 +747,7 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
               </div>
 
               {/* 5 Icons Row Bar */}
-              <div className="my-5 py-2.5 px-4 border border-[#c49838]/60 rounded-full flex items-center justify-around bg-amber-500/5 relative z-10">
+              <div className="my-5 py-2.5 px-4 border border-[#c49838]/60 rounded-full flex items-center justify-around bg-amber-500/5 relative z-10 shadow-xs">
                 {[
                   { label: 'Wedding Decoration', icon: '💍' },
                   { label: 'Birthday Party', icon: '🎂' },
@@ -709,34 +759,34 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
                     <span className="w-8 h-8 rounded-full border border-[#c49838] bg-white flex items-center justify-center text-sm shadow-xs">
                       {item.icon}
                     </span>
-                    <span className="text-[10px] font-bold text-zinc-800 uppercase tracking-tight">{item.label}</span>
+                    <span className="text-[10px] font-extrabold text-zinc-800 uppercase tracking-tight">{item.label}</span>
                   </div>
                 ))}
               </div>
 
               {/* Center Ribbon Header */}
               <div className="text-center my-4 relative z-10 flex justify-center">
-                <div className="bg-gradient-to-r from-[#a37926] via-[#c49838] to-[#a37926] text-white px-16 py-2 rounded-xl shadow-md border border-[#f5d77f]">
-                  <h2 className="text-2xl font-black font-luxury-serif tracking-[0.2em] text-white leading-none uppercase">
+                <div className="relative bg-gradient-to-r from-[#8c641c] via-[#c49838] to-[#8c641c] text-white px-20 py-2.5 rounded-xl shadow-lg border-2 border-[#f5d77f]">
+                  <h2 className="text-2xl font-black font-luxury-serif tracking-[0.25em] text-white leading-none uppercase drop-shadow-md">
                     {docType === 'bill' ? 'BILL / INVOICE' : 'BOOKING CONFIRMATION'}
                   </h2>
                 </div>
               </div>
 
               {/* Top Info Grid Details */}
-              <div className="border border-[#c49838]/40 rounded-2xl p-5 bg-[#faf8f5] space-y-2.5 relative z-10 text-sm shadow-xs">
+              <div className="border border-[#c49838]/50 rounded-2xl p-5 bg-[#faf8f5] space-y-2.5 relative z-10 text-sm shadow-xs">
                 <div className="grid grid-cols-2 gap-x-8 gap-y-2.5">
                   <div className="flex items-baseline">
                     <span className="w-32 font-bold text-zinc-900 flex items-center gap-1.5">
-                      <span>📄</span> Bill No.
+                      <span className="text-[#9b7625]">📄</span> Bill No.
                     </span>
                     <span className="w-4 text-zinc-500 font-bold">:</span>
-                    <span className="flex-1 font-extrabold text-zinc-900 border-b border-zinc-300/80 pb-0.5">{billNo}</span>
+                    <span className="flex-1 font-extrabold text-[#9b7625] border-b border-zinc-300/80 pb-0.5">{billNo}</span>
                   </div>
 
                   <div className="flex items-baseline">
                     <span className="w-32 font-bold text-zinc-900 flex items-center gap-1.5">
-                      <span>📅</span> Date
+                      <span className="text-[#9b7625]">📅</span> Date
                     </span>
                     <span className="w-4 text-zinc-500 font-bold">:</span>
                     <span className="flex-1 font-semibold text-zinc-900 border-b border-zinc-300/80 pb-0.5">{formatDateLong(issueDate)}</span>
@@ -744,15 +794,15 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
 
                   <div className="flex items-baseline">
                     <span className="w-32 font-bold text-zinc-900 flex items-center gap-1.5">
-                      <span>👤</span> Client Name
+                      <span className="text-[#9b7625]">👤</span> Client Name
                     </span>
                     <span className="w-4 text-zinc-500 font-bold">:</span>
-                    <span className="flex-1 font-bold text-zinc-900 border-b border-zinc-300/80 pb-0.5">{clientName || '-'}</span>
+                    <span className="flex-1 font-extrabold text-zinc-900 border-b border-zinc-300/80 pb-0.5">{clientName || '-'}</span>
                   </div>
 
                   <div className="flex items-baseline">
                     <span className="w-32 font-bold text-zinc-900 flex items-center gap-1.5">
-                      <span>📞</span> Contact No.
+                      <span className="text-[#9b7625]">📞</span> Contact No.
                     </span>
                     <span className="w-4 text-zinc-500 font-bold">:</span>
                     <span className="flex-1 font-semibold text-zinc-900 border-b border-zinc-300/80 pb-0.5">{clientPhone || '-'}</span>
@@ -760,15 +810,15 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
 
                   <div className="flex items-baseline">
                     <span className="w-32 font-bold text-zinc-900 flex items-center gap-1.5">
-                      <span>🎉</span> Event Type
+                      <span className="text-[#9b7625]">🎉</span> Event Type
                     </span>
                     <span className="w-4 text-zinc-500 font-bold">:</span>
-                    <span className="flex-1 font-semibold text-zinc-900 border-b border-zinc-300/80 pb-0.5">{eventType}</span>
+                    <span className="flex-1 font-bold text-[#9b7625] border-b border-zinc-300/80 pb-0.5">{eventType}</span>
                   </div>
 
                   <div className="flex items-baseline">
                     <span className="w-32 font-bold text-zinc-900 flex items-center gap-1.5">
-                      <span>📅</span> Event Date
+                      <span className="text-[#9b7625]">📅</span> Event Date
                     </span>
                     <span className="w-4 text-zinc-500 font-bold">:</span>
                     <span className="flex-1 font-semibold text-zinc-900 border-b border-zinc-300/80 pb-0.5">{formatDateLong(eventDate)}</span>
@@ -776,7 +826,7 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
 
                   <div className="flex items-baseline">
                     <span className="w-32 font-bold text-zinc-900 flex items-center gap-1.5">
-                      <span>📍</span> Venue
+                      <span className="text-[#9b7625]">📍</span> Venue
                     </span>
                     <span className="w-4 text-zinc-500 font-bold">:</span>
                     <span className="flex-1 font-semibold text-zinc-900 border-b border-zinc-300/80 pb-0.5">{venue || '-'}</span>
@@ -784,7 +834,7 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
 
                   <div className="flex items-baseline">
                     <span className="w-32 font-bold text-zinc-900 flex items-center gap-1.5">
-                      <span>📍</span> Location
+                      <span className="text-[#9b7625]">📍</span> Location
                     </span>
                     <span className="w-4 text-zinc-500 font-bold">:</span>
                     <span className="flex-1 font-semibold text-zinc-900 border-b border-zinc-300/80 pb-0.5">{location} ({branch})</span>
@@ -793,35 +843,35 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
               </div>
 
               {/* Description & Rate Table */}
-              <div className="mt-5 border border-[#c49838] rounded-xl overflow-hidden shadow-xs relative z-10">
+              <div className="mt-5 border-2 border-[#c49838] rounded-xl overflow-hidden shadow-xs relative z-10">
                 <table className="w-full text-left text-sm border-collapse">
                   <thead>
-                    <tr className="bg-gradient-to-r from-[#a37926] to-[#c49838] text-white font-bold text-xs uppercase">
-                      <th className="py-2.5 px-3 border-r border-white/20 text-center w-16">S.No.</th>
-                      <th className="py-2.5 px-4 border-r border-white/20">Description</th>
-                      <th className="py-2.5 px-3 border-r border-white/20 text-center w-20">Qty.</th>
-                      <th className="py-2.5 px-4 border-r border-white/20 text-right w-28">Rate (₹)</th>
-                      <th className="py-2.5 px-4 text-right w-32">Amount (₹)</th>
+                    <tr className="bg-gradient-to-r from-[#8c641c] via-[#c49838] to-[#8c641c] text-white font-bold text-xs uppercase tracking-wider">
+                      <th className="py-3 px-3 border-r border-white/20 text-center w-16">S.No.</th>
+                      <th className="py-3 px-4 border-r border-white/20">Description / Package Details</th>
+                      <th className="py-3 px-3 border-r border-white/20 text-center w-20">Qty.</th>
+                      <th className="py-3 px-4 border-r border-white/20 text-right w-28">Rate (₹)</th>
+                      <th className="py-3 px-4 text-right w-32">Amount (₹)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#c49838]/20 bg-white">
                     {items.map((item, idx) => (
                       <tr key={idx} className="text-zinc-800 text-sm">
-                        <td className="py-3 px-3 border-r border-[#c49838]/20 text-center font-bold text-zinc-600">{idx + 1}</td>
-                        <td className="py-3 px-4 border-r border-[#c49838]/20 font-semibold text-zinc-900">
+                        <td className="py-3.5 px-3 border-r border-[#c49838]/20 text-center font-bold text-zinc-600">{idx + 1}</td>
+                        <td className="py-3.5 px-4 border-r border-[#c49838]/20 font-bold text-zinc-900">
                           {item.description}
                         </td>
-                        <td className="py-3 px-3 border-r border-[#c49838]/20 text-center font-medium">{item.qty}</td>
-                        <td className="py-3 px-4 border-r border-[#c49838]/20 text-right font-medium">₹{Number(item.rate).toLocaleString('en-IN')}/-</td>
-                        <td className="py-3 px-4 text-right font-bold text-zinc-900">₹{Number(item.amount).toLocaleString('en-IN')}/-</td>
+                        <td className="py-3.5 px-3 border-r border-[#c49838]/20 text-center font-bold text-zinc-700">{item.qty}</td>
+                        <td className="py-3.5 px-4 border-r border-[#c49838]/20 text-right font-medium">₹{Number(item.rate).toLocaleString('en-IN')}/-</td>
+                        <td className="py-3.5 px-4 text-right font-black text-zinc-900 text-base">₹{Number(item.amount).toLocaleString('en-IN')}/-</td>
                       </tr>
                     ))}
 
                     {/* Booking Notes as dynamic line item if present */}
                     {notes && (
                       <tr className="text-zinc-700 text-xs bg-amber-500/5">
-                        <td className="py-2 px-3 border-r border-[#c49838]/20 text-center italic">Note</td>
-                        <td colSpan={4} className="py-2 px-4 italic text-zinc-600">
+                        <td className="py-2.5 px-3 border-r border-[#c49838]/20 text-center font-bold text-[#9b7625]">Note</td>
+                        <td colSpan={4} className="py-2.5 px-4 italic text-zinc-700 font-medium">
                           📝 {notes}
                         </td>
                       </tr>
@@ -840,10 +890,10 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
                   </tbody>
                   <tfoot>
                     <tr className="bg-[#fff9ea] border-t-2 border-[#c49838] font-black text-base">
-                      <td colSpan={4} className="py-2.5 px-4 text-right uppercase tracking-wider text-zinc-900 font-luxury-serif">
+                      <td colSpan={4} className="py-3 px-4 text-right uppercase tracking-wider text-zinc-900 font-luxury-serif">
                         Total Amount
                       </td>
-                      <td className="py-2.5 px-4 text-right text-zinc-900 font-extrabold text-lg">
+                      <td className="py-3 px-4 text-right text-[#9b7625] font-black text-xl">
                         ₹{totalAmount.toLocaleString('en-IN')}/-
                       </td>
                     </tr>
@@ -855,10 +905,10 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
               <div className="grid grid-cols-12 gap-5 mt-5 items-stretch relative z-10">
                 
                 {/* Left: Payment Details Box */}
-                <div className="col-span-7 border border-[#c49838] rounded-xl overflow-hidden bg-white shadow-xs flex flex-col justify-between">
+                <div className="col-span-7 border-2 border-[#c49838]/60 rounded-xl overflow-hidden bg-white shadow-xs flex flex-col justify-between">
                   <div>
                     <div className="bg-[#0c0c0e] text-white py-2 px-4 font-bold text-xs uppercase tracking-wider text-center font-luxury-serif">
-                      PAYMENT DETAILS
+                      PAYMENT TRANSACTION DETAILS
                     </div>
                     <table className="w-full text-left text-xs border-collapse">
                       <thead>
@@ -872,11 +922,11 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
                       </thead>
                       <tbody>
                         <tr className="border-b border-[#c49838]/20 text-zinc-800">
-                          <td className="py-2 px-2 text-center border-r border-[#c49838]/20 font-bold">1</td>
-                          <td className="py-2 px-2 border-r border-[#c49838]/20">{formatDateLong(eventDate)}</td>
-                          <td className="py-2 px-2 border-r border-[#c49838]/20">{paymentMode}</td>
-                          <td className="py-2 px-2 text-right border-r border-[#c49838]/20 font-bold">₹{advanceReceived.toLocaleString('en-IN')}/-</td>
-                          <td className="py-2 px-2 text-zinc-600 font-medium">Advance Payment</td>
+                          <td className="py-2.5 px-2 text-center border-r border-[#c49838]/20 font-bold">1</td>
+                          <td className="py-2.5 px-2 border-r border-[#c49838]/20 font-semibold">{formatDateLong(eventDate)}</td>
+                          <td className="py-2.5 px-2 border-r border-[#c49838]/20 font-semibold">{paymentMode}</td>
+                          <td className="py-2.5 px-2 text-right border-r border-[#c49838]/20 font-extrabold text-emerald-700">₹{advanceReceived.toLocaleString('en-IN')}/-</td>
+                          <td className="py-2.5 px-2 text-zinc-600 font-medium">Advance Received</td>
                         </tr>
                       </tbody>
                     </table>
@@ -884,25 +934,25 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
                   
                   <div className="bg-[#fff9ea] border-t border-[#c49838]/40 p-2.5 flex justify-between items-center text-sm font-bold">
                     <span className="text-zinc-800 uppercase tracking-wider font-luxury-serif">Total Received</span>
-                    <span className="text-zinc-900 font-extrabold text-base">₹{advanceReceived.toLocaleString('en-IN')}/-</span>
+                    <span className="text-emerald-700 font-black text-base">₹{advanceReceived.toLocaleString('en-IN')}/-</span>
                   </div>
                 </div>
 
                 {/* Right: Summary Badges */}
                 <div className="col-span-5 space-y-2 flex flex-col justify-between">
-                  <div className="bg-[#faf8f5] border border-[#c49838]/40 rounded-xl p-2.5 flex justify-between items-center">
+                  <div className="bg-[#faf8f5] border border-[#c49838]/60 rounded-xl p-3 flex justify-between items-center shadow-xs">
                     <span className="text-xs font-bold text-zinc-700 uppercase">Total Amount</span>
-                    <span className="text-base font-extrabold text-zinc-900">₹{totalAmount.toLocaleString('en-IN')}/-</span>
+                    <span className="text-base font-black text-zinc-900">₹{totalAmount.toLocaleString('en-IN')}/-</span>
                   </div>
 
-                  <div className="bg-emerald-50 border border-emerald-300 rounded-xl p-2.5 flex justify-between items-center">
-                    <span className="text-xs font-bold text-emerald-800 uppercase">Amount Received</span>
-                    <span className="text-base font-black text-emerald-600">₹{advanceReceived.toLocaleString('en-IN')}/-</span>
+                  <div className="bg-emerald-50 border-2 border-emerald-300 rounded-xl p-3 flex justify-between items-center shadow-xs">
+                    <span className="text-xs font-extrabold text-emerald-900 uppercase">Amount Received</span>
+                    <span className="text-lg font-black text-emerald-700">₹{advanceReceived.toLocaleString('en-IN')}/-</span>
                   </div>
 
-                  <div className="bg-rose-50 border border-rose-300 rounded-xl p-2.5 flex justify-between items-center">
-                    <span className="text-xs font-bold text-rose-800 uppercase">Remaining Amount</span>
-                    <span className="text-base font-black text-rose-600">₹{remainingAmount.toLocaleString('en-IN')}/-</span>
+                  <div className="bg-rose-50 border-2 border-rose-300 rounded-xl p-3 flex justify-between items-center shadow-xs">
+                    <span className="text-xs font-extrabold text-rose-900 uppercase">Remaining Balance</span>
+                    <span className="text-lg font-black text-rose-700">₹{remainingAmount.toLocaleString('en-IN')}/-</span>
                   </div>
                 </div>
 
@@ -910,11 +960,11 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
             </div>
 
             {/* Bottom Footer Section: T&C + Signature */}
-            <div className="grid grid-cols-12 gap-6 items-end border-t border-[#c49838]/30 pt-5 mt-6 relative z-10">
+            <div className="grid grid-cols-12 gap-6 items-end border-t-2 border-[#c49838]/40 pt-5 mt-6 relative z-10">
               
               {/* Left: Terms & Conditions */}
               <div className="col-span-7 flex items-start gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#c49838] text-white flex items-center justify-center shrink-0 shadow-xs text-base">
+                <div className="w-10 h-10 rounded-full bg-[#c49838] text-white flex items-center justify-center shrink-0 shadow-md text-lg">
                   📋
                 </div>
                 <div className="space-y-1">
@@ -922,17 +972,25 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
                     TERMS & CONDITIONS
                   </h3>
                   <ul className="text-[10px] text-zinc-600 space-y-0.5 list-disc pl-3.5 font-medium leading-relaxed">
-                    <li>Advance amount is non-refundable.</li>
-                    <li>Balance amount (if any) must be cleared before or on the event date.</li>
-                    <li>Date once booked will be reserved exclusively for you.</li>
-                    <li>Any additional requirements will be charged separately.</li>
-                    <li>This is a computer generated bill from Sidhi Vinayak Events.</li>
+                    <li>Advance amount is strictly non-refundable.</li>
+                    <li>Balance amount (if any) must be cleared on or before event date.</li>
+                    <li>Date once booked will be reserved exclusively for your event.</li>
+                    <li>Any additional setup requirements will be charged separately.</li>
+                    <li>This is a computer generated document from Sidhi Vinayak Events.</li>
                   </ul>
                 </div>
               </div>
 
-              {/* Right: Signature */}
-              <div className="col-span-5 flex flex-col items-center text-center">
+              {/* Right: Official Stamp & Signature */}
+              <div className="col-span-5 flex flex-col items-center text-center relative">
+                
+                {/* Official Verification Stamp Graphic */}
+                <div className="absolute top-[-25px] right-2 w-20 h-20 border-2 border-dashed border-[#c49838] rounded-full flex flex-col items-center justify-center p-1 rotate-[-12deg] opacity-80 pointer-events-none select-none bg-amber-500/5">
+                  <span className="text-[7px] font-black uppercase text-[#9b7625] tracking-tighter">SIDHI VINAYAK</span>
+                  <span className="text-[9px] font-black uppercase text-[#8c641c] border-y border-[#c49838] py-0.5 my-0.5 w-full text-center">VERIFIED</span>
+                  <span className="text-[6px] font-bold uppercase text-[#9b7625]">EVENTS JAIPUR</span>
+                </div>
+
                 <div className="mb-2">
                   <p className="text-2xl font-signature text-[#9b7625] font-medium leading-none">Thank You! ♡</p>
                   <p className="text-[9px] text-zinc-500 mt-0.5">for trusting Sidhi Vinayak Events</p>
@@ -941,14 +999,13 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
                 <span className="text-4xl font-signature text-[#9b7625] tracking-wide rotate-[-3deg] select-none pointer-events-none capitalize">
                   {ownerDetails[owner].name}
                 </span>
-                <span className="w-36 h-[1.5px] bg-zinc-800 my-1" />
+                <span className="w-40 h-[1.5px] bg-zinc-800 my-1" />
                 <span className="text-[10px] font-bold text-zinc-800 uppercase tracking-wider font-luxury-serif">AUTHORIZED SIGNATURE</span>
                 <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest mt-0.5">SIDHI VINAYAK EVENTS</span>
                 <span className="text-[9px] text-[#9b7625] font-bold mt-0.5">📞 {ownerDetails[owner].phone}</span>
               </div>
 
             </div>
-
           </div>
         </div>
       </div>
