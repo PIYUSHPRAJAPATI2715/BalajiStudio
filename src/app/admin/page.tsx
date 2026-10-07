@@ -435,6 +435,14 @@ function BookingsTab({ token }: { token: string }) {
     try { await api.bookings.update(token, id, { status: newStatus }); load(); } catch (e: any) { alert(e.message); }
   };
 
+  const handleManagerChange = async (id: string, newManager: string) => {
+    try { await api.bookings.update(token, id, { assignedTo: newManager }); load(); } catch (e: any) { alert(e.message); }
+  };
+
+  const handleBranchChange = async (id: string, newBranch: string) => {
+    try { await api.bookings.update(token, id, { branch: newBranch }); load(); } catch (e: any) { alert(e.message); }
+  };
+
   const handleWhatsAppMsg = (b: Booking) => {
     const phoneClean = (b.clientPhone || '').replace(/\D/g, '');
     const rem = Math.max(0, b.totalAmount - b.receivedAmount);
@@ -562,10 +570,27 @@ ${b.notes ? `\n📝 *Notes:* ${b.notes}` : ''}
                         {b.venue && <p className="text-[11px] text-gray-500">{b.venue}</p>}
                       </td>
                       <td className="px-4 py-3 hidden lg:table-cell">
-                        <span className="inline-block text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                          {b.branch || 'Jaipur'}
-                        </span>
-                        <p className="text-xs text-gray-400 mt-0.5">Manager: {b.assignedTo || 'Piyush'}</p>
+                        <select
+                          value={b.branch || 'Jaipur'}
+                          onChange={e => handleBranchChange(b._id, e.target.value)}
+                          className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20 outline-none cursor-pointer"
+                        >
+                          <option value="Jaipur" className="bg-zinc-900 text-white">Jaipur</option>
+                          <option value="Shahpura" className="bg-zinc-900 text-white">Shahpura</option>
+                          <option value="Neem Ka Thana" className="bg-zinc-900 text-white">Neem Ka Thana</option>
+                        </select>
+                        <div className="flex items-center gap-1 text-xs text-gray-400 mt-1">
+                          <span>Mgr:</span>
+                          <select
+                            value={b.assignedTo || 'Piyush'}
+                            onChange={e => handleManagerChange(b._id, e.target.value)}
+                            className="bg-transparent border-0 text-amber-400 font-semibold text-xs outline-none cursor-pointer"
+                          >
+                            <option value="Piyush" className="bg-zinc-900 text-white">Piyush</option>
+                            <option value="Vishnu" className="bg-zinc-900 text-white">Vishnu</option>
+                            <option value="Manoj" className="bg-zinc-900 text-white">Manoj</option>
+                          </select>
+                        </div>
                       </td>
                       <td className="px-4 py-3 hidden lg:table-cell text-gray-300 font-medium">{fmtDate(b.date)}</td>
                       <td className="px-4 py-3 hidden xl:table-cell">

@@ -33,12 +33,12 @@ const bookingSchema = new mongoose.Schema(
     },
     branch: {
       type: String,
-      enum: ['Jaipur', 'Shahpura', 'Neem Ka Thana'],
+      trim: true,
       default: 'Jaipur',
     },
     assignedTo: {
       type: String,
-      enum: ['Piyush', 'Vishnu', 'Manoj'],
+      trim: true,
       default: 'Piyush',
     },
     eventType: {
