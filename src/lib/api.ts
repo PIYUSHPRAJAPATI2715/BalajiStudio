@@ -62,9 +62,11 @@ export const api = {
 
   // ─── Bookings ──────────────────────────────────────────
   bookings: {
-    getAll: (token: string, params?: { status?: string; search?: string; month?: number; year?: number }) => {
+    getAll: (token: string, params?: { status?: string; search?: string; month?: number; year?: number; assignedTo?: string; branch?: string }) => {
       const query = new URLSearchParams();
       if (params?.status) query.set('status', params.status);
+      if (params?.assignedTo) query.set('assignedTo', params.assignedTo);
+      if (params?.branch) query.set('branch', params.branch);
       if (params?.search) query.set('search', params.search);
       if (params?.month) query.set('month', String(params.month));
       if (params?.year) query.set('year', String(params.year));

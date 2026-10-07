@@ -10,11 +10,19 @@ const router = express.Router();
 // @access  Private
 router.get('/', protect, async (req, res) => {
   try {
-    const { status, month, year, search } = req.query;
+    const { status, month, year, search, assignedTo, branch } = req.query;
     const filter = {};
 
     if (status && status !== 'all') {
       filter.status = status;
+    }
+
+    if (assignedTo && assignedTo !== 'all') {
+      filter.assignedTo = assignedTo;
+    }
+
+    if (branch && branch !== 'all') {
+      filter.branch = branch;
     }
 
     if (month && year) {
@@ -31,8 +39,10 @@ router.get('/', protect, async (req, res) => {
     if (search) {
       filter.$or = [
         { clientName: { $regex: search, $options: 'i' } },
+        { clientPhone: { $regex: search, $options: 'i' } },
         { programName: { $regex: search, $options: 'i' } },
         { location: { $regex: search, $options: 'i' } },
+        { venue: { $regex: search, $options: 'i' } },
         { eventType: { $regex: search, $options: 'i' } },
       ];
     }

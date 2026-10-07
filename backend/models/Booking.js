@@ -7,6 +7,11 @@ const bookingSchema = new mongoose.Schema(
       required: [true, 'Client name is required'],
       trim: true,
     },
+    clientPhone: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     programName: {
       type: String,
       required: [true, 'Program name is required'],
@@ -16,10 +21,25 @@ const bookingSchema = new mongoose.Schema(
       type: Date,
       required: [true, 'Event date is required'],
     },
+    venue: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     location: {
       type: String,
       required: [true, 'Location is required'],
       trim: true,
+    },
+    branch: {
+      type: String,
+      enum: ['Jaipur', 'Shahpura', 'Neem Ka Thana'],
+      default: 'Jaipur',
+    },
+    assignedTo: {
+      type: String,
+      enum: ['Piyush', 'Vishnu', 'Manoj'],
+      default: 'Piyush',
     },
     eventType: {
       type: String,
@@ -37,6 +57,11 @@ const bookingSchema = new mongoose.Schema(
         'Other',
       ],
       default: 'Other',
+    },
+    paymentMode: {
+      type: String,
+      trim: true,
+      default: 'Cash/UPI',
     },
     totalAmount: {
       type: Number,
@@ -58,6 +83,14 @@ const bookingSchema = new mongoose.Schema(
       trim: true,
       default: '',
     },
+    items: [
+      {
+        description: { type: String, default: '' },
+        qty: { type: Number, default: 1 },
+        rate: { type: Number, default: 0 },
+        amount: { type: Number, default: 0 },
+      },
+    ],
   },
   {
     timestamps: true,

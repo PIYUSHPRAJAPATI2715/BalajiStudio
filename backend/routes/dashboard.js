@@ -31,6 +31,7 @@ router.get('/', protect, async (req, res) => {
       totalGallery,
       revenueAgg,
       thisMonthRevenueAgg,
+      branchRevenueAgg,
     ] = await Promise.all([
       Booking.countDocuments(),
       Booking.countDocuments({ status: 'upcoming' }),
@@ -48,6 +49,16 @@ router.get('/', protect, async (req, res) => {
       Booking.aggregate([
         { $match: { date: { $gte: thisMonthStart, $lte: thisMonthEnd } } },
         { $group: { _id: null, total: { $sum: '$totalAmount' }, received: { $sum: '$receivedAmount' } } },
+      ]),
+      Booking.aggregate([
+        {
+          $group: {
+            _id: '$branch',
+            total: { $sum: '$totalAmount' },
+            received: { $sum: '$receivedAmount' },
+            count: { $sum: 1 },
+          },
+        },
       ]),
     ]);
 
@@ -70,6 +81,19 @@ router.get('/', protect, async (req, res) => {
     const totalRevenue = revenueAgg[0] || { total: 0, received: 0 };
     const thisMonthRevenue = thisMonthRevenueAgg[0] || { total: 0, received: 0 };
 
+    const branchMap = {
+      jaipur: { total: 0, received: 0, count: 0 },
+      shahpura: { total: 0, received: 0, count: 0 },
+      neemKaThana: { total: 0, received: 0, count: 0 },
+    };
+
+    (branchRevenueAgg || []).forEach(b => {
+      const key = b._id === 'Shahpura' ? 'shahpura' : b._id === 'Neem Ka Thana' ? 'neemKaThana' : 'jaipur';
+      branchMap[key].total += b.total || 0;
+      branchMap[key].received += b.received || 0;
+      branchMap[key].count += b.count || 0;
+    });
+
     res.json({
       success: true,
       data: {
@@ -85,6 +109,7 @@ router.get('/', protect, async (req, res) => {
           received: totalRevenue.received,
           pending: totalRevenue.total - totalRevenue.received,
           thisMonth: thisMonthRevenue.received,
+          branches: branchMap,
         },
         reviews: {
           pending: pendingReviews,

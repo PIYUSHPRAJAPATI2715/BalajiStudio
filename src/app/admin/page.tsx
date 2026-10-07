@@ -9,7 +9,7 @@ import {
   ChevronDown, RefreshCw, Bell, User, Menu, ChevronRight, Mail,
   Phone, MapPin, Camera, Heart, Video, Home, Gift, Baby, Zap,
   Shield, Key, Save, BarChart3, Users, ExternalLink, ArrowUpRight,
-  ArrowDownRight, Loader2, ImageOff, StarOff, FileText
+  ArrowDownRight, Loader2, ImageOff, StarOff, FileText, Send
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import DocumentGenerator from '@/components/DocumentGenerator';
@@ -17,9 +17,12 @@ import DocumentGenerator from '@/components/DocumentGenerator';
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Admin = { id: string; username: string; displayName: string; lastLogin: string };
 type Booking = {
-  _id: string; clientName: string; programName: string; date: string;
-  location: string; eventType: string; totalAmount: number; receivedAmount: number;
+  _id: string; clientName: string; clientPhone?: string; programName: string; date: string;
+  venue?: string; location: string; branch?: 'Jaipur' | 'Shahpura' | 'Neem Ka Thana';
+  assignedTo?: 'Piyush' | 'Vishnu' | 'Manoj'; paymentMode?: string;
+  eventType: string; totalAmount: number; receivedAmount: number;
   status: 'upcoming' | 'completed' | 'cancelled'; notes?: string;
+  items?: { description: string; qty: number; rate: number; amount: number }[];
   balanceDue?: number; paymentPercent?: number; createdAt: string;
 };
 type Review = {
@@ -36,7 +39,14 @@ type GalleryItem = {
 };
 type DashboardData = {
   bookings: { total: number; upcoming: number; completed: number; thisMonth: number; nextMonth: number };
-  revenue: { total: number; received: number; pending: number; thisMonth: number };
+  revenue: {
+    total: number; received: number; pending: number; thisMonth: number;
+    branches?: {
+      jaipur: { total: number; received: number; count: number };
+      shahpura: { total: number; received: number; count: number };
+      neemKaThana: { total: number; received: number; count: number };
+    };
+  };
   reviews: { pending: number; approved: number };
   contacts: { unread: number; total: number };
   gallery: { total: number };
@@ -194,6 +204,30 @@ function DashboardTab({ token }: { token: string }) {
         <StatCard label="Pending Reviews" value={data.reviews.pending} icon={Star} color="bg-purple-500" sub={`${data.contacts.unread} unread msgs`} />
       </div>
 
+      {/* Branch Revenue Overview */}
+      <div className="bg-zinc-900/80 border border-white/10 rounded-2xl p-6">
+        <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-white">
+          <MapPin className="w-5 h-5 text-amber-500" /> Branch Wise Revenue
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white/5 border border-amber-500/20 rounded-xl p-4">
+            <p className="text-xs text-amber-400 font-bold uppercase tracking-wider">Jaipur Branch</p>
+            <p className="text-2xl font-extrabold text-white mt-1">{fmt(data.revenue?.branches?.jaipur?.total || 0)}</p>
+            <p className="text-xs text-gray-400 mt-1">{fmt(data.revenue?.branches?.jaipur?.received || 0)} received ({data.revenue?.branches?.jaipur?.count || 0} bookings)</p>
+          </div>
+          <div className="bg-white/5 border border-amber-500/20 rounded-xl p-4">
+            <p className="text-xs text-amber-400 font-bold uppercase tracking-wider">Shahpura Branch</p>
+            <p className="text-2xl font-extrabold text-white mt-1">{fmt(data.revenue?.branches?.shahpura?.total || 0)}</p>
+            <p className="text-xs text-gray-400 mt-1">{fmt(data.revenue?.branches?.shahpura?.received || 0)} received ({data.revenue?.branches?.shahpura?.count || 0} bookings)</p>
+          </div>
+          <div className="bg-white/5 border border-amber-500/20 rounded-xl p-4">
+            <p className="text-xs text-amber-400 font-bold uppercase tracking-wider">Neem Ka Thana Branch</p>
+            <p className="text-2xl font-extrabold text-white mt-1">{fmt(data.revenue?.branches?.neemKaThana?.total || 0)}</p>
+            <p className="text-xs text-gray-400 mt-1">{fmt(data.revenue?.branches?.neemKaThana?.received || 0)} received ({data.revenue?.branches?.neemKaThana?.count || 0} bookings)</p>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Upcoming Events */}
         <div className="bg-zinc-900/80 border border-white/10 rounded-2xl p-6">
@@ -278,6 +312,8 @@ function BookingsTab({ token }: { token: string }) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'completed' | 'cancelled'>('all');
+  const [assignedFilter, setAssignedFilter] = useState<'all' | 'Piyush' | 'Vishnu' | 'Manoj'>('all');
+  const [branchFilter, setBranchFilter] = useState<'all' | 'Jaipur' | 'Shahpura' | 'Neem Ka Thana'>('all');
   const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editBooking, setEditBooking] = useState<Booking | null>(null);
@@ -288,7 +324,13 @@ function BookingsTab({ token }: { token: string }) {
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const locationRef = useRef<HTMLDivElement>(null);
 
-  const emptyForm = { clientName: '', programName: '', date: '', location: '', eventType: EVENT_TYPES[0], totalAmount: '', receivedAmount: '', status: 'upcoming', notes: '' };
+  const emptyForm = {
+    clientName: '', clientPhone: '', programName: '', date: '', venue: '', location: '',
+    branch: 'Jaipur' as 'Jaipur' | 'Shahpura' | 'Neem Ka Thana',
+    assignedTo: 'Piyush' as 'Piyush' | 'Vishnu' | 'Manoj',
+    paymentMode: 'Cash/UPI', eventType: EVENT_TYPES[0],
+    totalAmount: '', receivedAmount: '', status: 'upcoming', notes: ''
+  };
   const [formData, setFormData] = useState<typeof emptyForm>(emptyForm);
 
   useEffect(() => {
@@ -315,22 +357,28 @@ function BookingsTab({ token }: { token: string }) {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api.bookings.getAll(token, { status: filter === 'all' ? undefined : filter, search }) as { data: Booking[] };
+      const res = await api.bookings.getAll(token, {
+        status: filter === 'all' ? undefined : filter,
+        assignedTo: assignedFilter === 'all' ? undefined : assignedFilter,
+        branch: branchFilter === 'all' ? undefined : branchFilter,
+        search
+      }) as { data: Booking[] };
       setBookings(res.data || []);
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
-  }, [token, filter, search]);
+  }, [token, filter, assignedFilter, branchFilter, search]);
 
   useEffect(() => { load(); }, [load]);
 
   const openEdit = (b: Booking) => {
     setEditBooking(b);
     setFormData({
-      clientName: b.clientName, programName: b.programName,
-      date: b.date ? b.date.split('T')[0] : '',
-      location: b.location, eventType: b.eventType,
-      totalAmount: String(b.totalAmount), receivedAmount: String(b.receivedAmount),
-      status: b.status, notes: b.notes || '',
+      clientName: b.clientName, clientPhone: b.clientPhone || '', programName: b.programName,
+      date: b.date ? b.date.split('T')[0] : '', venue: b.venue || '',
+      location: b.location, branch: b.branch || 'Jaipur',
+      assignedTo: b.assignedTo || 'Piyush', paymentMode: b.paymentMode || 'Cash/UPI',
+      eventType: b.eventType, totalAmount: String(b.totalAmount),
+      receivedAmount: String(b.receivedAmount), status: b.status, notes: b.notes || '',
     });
     setShowForm(true);
   };
@@ -362,28 +410,94 @@ function BookingsTab({ token }: { token: string }) {
     try { await api.bookings.update(token, id, { status: newStatus }); load(); } catch (e: any) { alert(e.message); }
   };
 
+  const handleWhatsAppMsg = (b: Booking) => {
+    const phoneClean = (b.clientPhone || '').replace(/\D/g, '');
+    const rem = Math.max(0, b.totalAmount - b.receivedAmount);
+    const msg = `🎉 *BOOKING CONFIRMATION - Sidhi Vinayak Events*
+---------------------------------------------
+Dear *${b.clientName}*,
+We are pleased to confirm your booking!
+
+📅 *Event Date:* ${fmtDate(b.date)}
+🎉 *Event Type:* ${b.eventType}
+📍 *Venue:* ${b.venue || 'N/A'}
+📍 *Location:* ${b.location} (${b.branch || 'Jaipur'})
+💰 *Total Amount:* ${fmt(b.totalAmount)}
+💵 *Advance Received:* ${fmt(b.receivedAmount)}
+🔴 *Remaining Balance:* ${fmt(rem)}
+
+👤 *Assigned Manager:* ${b.assignedTo || 'Piyush'}
+${b.notes ? `\n📝 *Notes:* ${b.notes}` : ''}
+
+✨ *Your Dream, We Create Memories*
+🌐 Website: https://www.sidhivinayakevents.in`;
+
+    const url = phoneClean 
+      ? `https://api.whatsapp.com/send?phone=${phoneClean}&text=${encodeURIComponent(msg)}`
+      : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  };
+
   return (
     <div className="space-y-6">
       {/* Controls */}
-      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-        <div className="flex gap-2 flex-wrap">
-          {(['all', 'upcoming', 'completed', 'cancelled'] as const).map(f => (
-            <button key={f} onClick={() => setFilter(f)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all ${filter === f ? 'bg-amber-500 text-black' : 'bg-zinc-800 text-gray-400 hover:text-white'}`}>
-              {f}
-            </button>
-          ))}
-        </div>
-        <div className="flex gap-2 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-56">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search bookings..."
-              className="w-full pl-9 pr-4 py-2.5 bg-zinc-800 border border-white/10 rounded-xl text-sm text-white outline-none focus:border-amber-500/50" />
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          {/* Status Tabs */}
+          <div className="flex gap-2 flex-wrap">
+            {(['all', 'upcoming', 'completed', 'cancelled'] as const).map(f => (
+              <button key={f} onClick={() => setFilter(f)}
+                className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all ${filter === f ? 'bg-amber-500 text-black font-bold' : 'bg-zinc-800 text-gray-400 hover:text-white'}`}>
+                {f}
+              </button>
+            ))}
           </div>
-          <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-xl text-sm transition-all">
-            <Plus className="w-4 h-4" /> Add
-          </button>
-          <button onClick={load} className="p-2.5 bg-zinc-800 border border-white/10 rounded-xl text-gray-400 hover:text-white transition-colors"><RefreshCw className="w-4 h-4" /></button>
+
+          {/* Action Buttons */}
+          <div className="flex gap-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-56">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search bookings..."
+                className="w-full pl-9 pr-4 py-2 bg-zinc-800 border border-white/10 rounded-xl text-sm text-white outline-none focus:border-amber-500/50" />
+            </div>
+            <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl text-sm transition-all shadow-md">
+              <Plus className="w-4 h-4" /> Add Booking
+            </button>
+            <button onClick={load} className="p-2 bg-zinc-800 border border-white/10 rounded-xl text-gray-400 hover:text-white transition-colors"><RefreshCw className="w-4 h-4" /></button>
+          </div>
+        </div>
+
+        {/* Manager & Branch Dropdown Filters */}
+        <div className="flex flex-wrap gap-4 items-center bg-zinc-900/80 p-3 rounded-2xl border border-white/10">
+          <div className="flex items-center gap-2">
+            <User className="w-4 h-4 text-amber-500" />
+            <span className="text-xs text-gray-400 font-semibold uppercase">Manager:</span>
+            <select
+              value={assignedFilter}
+              onChange={e => setAssignedFilter(e.target.value as any)}
+              className="bg-zinc-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-amber-500"
+            >
+              <option value="all">All Managers</option>
+              <option value="Piyush">Piyush</option>
+              <option value="Vishnu">Vishnu</option>
+              <option value="Manoj">Manoj</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-amber-500" />
+            <span className="text-xs text-gray-400 font-semibold uppercase">Branch:</span>
+            <select
+              value={branchFilter}
+              onChange={e => setBranchFilter(e.target.value as any)}
+              className="bg-zinc-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-amber-500"
+            >
+              <option value="all">All Branches</option>
+              <option value="Jaipur">Jaipur</option>
+              <option value="Shahpura">Shahpura</option>
+              <option value="Neem Ka Thana">Neem Ka Thana</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -400,6 +514,7 @@ function BookingsTab({ token }: { token: string }) {
                 <tr className="border-b border-white/10 bg-zinc-800/50">
                   <th className="text-left px-4 py-3 text-gray-400 font-medium">Client</th>
                   <th className="text-left px-4 py-3 text-gray-400 font-medium hidden md:table-cell">Event</th>
+                  <th className="text-left px-4 py-3 text-gray-400 font-medium hidden lg:table-cell">Branch & Manager</th>
                   <th className="text-left px-4 py-3 text-gray-400 font-medium hidden lg:table-cell">Date</th>
                   <th className="text-left px-4 py-3 text-gray-400 font-medium hidden xl:table-cell">Amount</th>
                   <th className="text-left px-4 py-3 text-gray-400 font-medium">Status</th>
@@ -412,18 +527,25 @@ function BookingsTab({ token }: { token: string }) {
                   return (
                     <tr key={b._id} className="hover:bg-white/5 transition-colors group">
                       <td className="px-4 py-3">
-                        <p className="font-medium text-white">{b.clientName}</p>
-                        <p className="text-xs text-gray-500">{b.programName}</p>
+                        <p className="font-semibold text-white">{b.clientName}</p>
+                        <p className="text-xs text-gray-400">{b.clientPhone || b.programName}</p>
                       </td>
                       <td className="px-4 py-3 hidden md:table-cell">
-                        <span className="flex items-center gap-1.5 text-gray-300">
+                        <span className="flex items-center gap-1.5 text-gray-300 font-medium">
                           <Icon className="w-3.5 h-3.5 text-amber-500" />{b.eventType}
                         </span>
+                        {b.venue && <p className="text-[11px] text-gray-500">{b.venue}</p>}
                       </td>
-                      <td className="px-4 py-3 hidden lg:table-cell text-gray-300">{fmtDate(b.date)}</td>
+                      <td className="px-4 py-3 hidden lg:table-cell">
+                        <span className="inline-block text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                          {b.branch || 'Jaipur'}
+                        </span>
+                        <p className="text-xs text-gray-400 mt-0.5">Manager: {b.assignedTo || 'Piyush'}</p>
+                      </td>
+                      <td className="px-4 py-3 hidden lg:table-cell text-gray-300 font-medium">{fmtDate(b.date)}</td>
                       <td className="px-4 py-3 hidden xl:table-cell">
-                        <p className="text-white">{fmt(b.totalAmount)}</p>
-                        <p className="text-xs text-gray-500">{fmt(b.receivedAmount)} received</p>
+                        <p className="text-white font-bold">{fmt(b.totalAmount)}</p>
+                        <p className="text-xs text-green-400">{fmt(b.receivedAmount)} received</p>
                       </td>
                       <td className="px-4 py-3">
                         <select value={b.status} onChange={e => handleStatusChange(b._id, e.target.value)}
@@ -436,9 +558,10 @@ function BookingsTab({ token }: { token: string }) {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-1">
-                          <button onClick={() => setViewBooking(b)} className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors"><Eye className="w-4 h-4" /></button>
-                          <button onClick={() => openEdit(b)} className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-amber-400 transition-colors"><Edit2 className="w-4 h-4" /></button>
-                          <button onClick={() => handleDelete(b._id)} className="p-1.5 rounded-lg hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                          <button onClick={() => setViewBooking(b)} title="View Details" className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors"><Eye className="w-4 h-4" /></button>
+                          <button onClick={() => handleWhatsAppMsg(b)} title="Send WhatsApp Confirmation" className="p-1.5 rounded-lg hover:bg-green-500/20 text-gray-400 hover:text-green-400 transition-colors"><Send className="w-4 h-4" /></button>
+                          <button onClick={() => openEdit(b)} title="Edit Booking" className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-amber-400 transition-colors"><Edit2 className="w-4 h-4" /></button>
+                          <button onClick={() => handleDelete(b._id)} title="Delete Booking" className="p-1.5 rounded-lg hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors"><Trash2 className="w-4 h-4" /></button>
                         </div>
                       </td>
                     </tr>
@@ -454,23 +577,35 @@ function BookingsTab({ token }: { token: string }) {
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editBooking ? 'Edit Booking' : 'Add New Booking'}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <InputField label="Client Name *" id="b-client" value={formData.clientName} onChange={e => setFormData({ ...formData, clientName: e.target.value })} required placeholder="Rahul Sharma" />
-            <InputField label="Program Name *" id="b-program" value={formData.programName} onChange={e => setFormData({ ...formData, programName: e.target.value })} required placeholder="Wedding Photography" />
+            <InputField label="Client Name *" id="b-client" value={formData.clientName} onChange={e => setFormData({ ...formData, clientName: e.target.value })} required placeholder="Lokesh" />
+            <InputField label="Contact Phone" id="b-phone" value={formData.clientPhone} onChange={e => setFormData({ ...formData, clientPhone: e.target.value })} placeholder="98290XXXXX" />
           </div>
+
           <div className="grid grid-cols-2 gap-4">
-            <InputField label="Date *" id="b-date" type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} required />
+            <InputField label="Program / Package *" id="b-program" value={formData.programName} onChange={e => setFormData({ ...formData, programName: e.target.value })} required placeholder="Mandir Decoration Package" />
             <SelectField label="Event Type" id="b-type" value={formData.eventType} onChange={e => setFormData({ ...formData, eventType: e.target.value })} options={EVENT_TYPES} />
           </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <InputField label="Event Date *" id="b-date" type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} required />
+            <SelectField label="Branch Location" id="b-branch" value={formData.branch} onChange={e => setFormData({ ...formData, branch: e.target.value as any })} options={['Jaipur', 'Shahpura', 'Neem Ka Thana']} />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <InputField label="Venue (Hall/Temple/House)" id="b-venue" value={formData.venue} onChange={e => setFormData({ ...formData, venue: e.target.value })} placeholder="Narayandash ji Mansir" />
+            <SelectField label="Assigned Manager" id="b-owner" value={formData.assignedTo} onChange={e => setFormData({ ...formData, assignedTo: e.target.value as any })} options={['Piyush', 'Vishnu', 'Manoj']} />
+          </div>
+
           {/* Location with autocomplete */}
           <div ref={locationRef} className="relative">
-            <label className="block text-sm font-medium text-gray-400 mb-1.5">Location *</label>
+            <label className="block text-sm font-medium text-gray-400 mb-1.5">Location / City Area *</label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input
                 value={formData.location}
                 onChange={e => { setFormData({ ...formData, location: e.target.value }); setShowLocationDropdown(true); }}
                 onFocus={() => setShowLocationDropdown(true)}
-                placeholder="Type to search location..."
+                placeholder="Chimanpura, Jaipur"
                 required
                 className="w-full pl-9 pr-4 bg-black/50 border border-white/10 rounded-xl py-3 text-white focus:border-amber-500/70 outline-none transition-all placeholder-gray-600"
               />
@@ -487,25 +622,30 @@ function BookingsTab({ token }: { token: string }) {
               </div>
             )}
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <InputField label="Total Amount (₹)" id="b-total" type="number" min="0" value={formData.totalAmount} onChange={e => setFormData({ ...formData, totalAmount: e.target.value })} placeholder="0" />
-            <InputField label="Received Amount (₹)" id="b-received" type="number" min="0" value={formData.receivedAmount} onChange={e => setFormData({ ...formData, receivedAmount: e.target.value })} placeholder="0" />
+
+          <div className="grid grid-cols-3 gap-3">
+            <InputField label="Total Amount (₹)" id="b-total" type="number" min="0" value={formData.totalAmount} onChange={e => setFormData({ ...formData, totalAmount: e.target.value })} placeholder="2600" />
+            <InputField label="Received Advance (₹)" id="b-received" type="number" min="0" value={formData.receivedAmount} onChange={e => setFormData({ ...formData, receivedAmount: e.target.value })} placeholder="500" />
+            <InputField label="Payment Mode" id="b-mode" value={formData.paymentMode} onChange={e => setFormData({ ...formData, paymentMode: e.target.value })} placeholder="Cash/UPI" />
           </div>
+
           <div className="grid grid-cols-2 gap-4">
             <SelectField label="Status" id="b-status" value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })} options={['upcoming', 'completed', 'cancelled']} />
             <div />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1.5">Notes</label>
+            <label className="block text-sm font-medium text-gray-400 mb-1.5">Booking Notes (Included in Bill)</label>
             <textarea value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="Any additional notes..."
+              placeholder="Advance paid 500/-, special mandir decoration items..."
               className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-amber-500/70 outline-none resize-none h-20 placeholder-gray-600" />
           </div>
+
           <div className="flex gap-3 pt-2">
             <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-3 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:border-white/30 transition-all font-medium">Cancel</button>
             <button type="submit" disabled={formLoading} className="flex-1 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold transition-all flex items-center justify-center gap-2">
               {formLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              {editBooking ? 'Update' : 'Create'}
+              {editBooking ? 'Update Booking' : 'Create Booking'}
             </button>
           </div>
         </form>
@@ -516,16 +656,20 @@ function BookingsTab({ token }: { token: string }) {
         {viewBooking && (
           <div className="space-y-4 text-sm">
             {[
-              ['Client', viewBooking.clientName],
-              ['Program', viewBooking.programName],
+              ['Client Name', viewBooking.clientName],
+              ['Contact Phone', viewBooking.clientPhone || 'Not provided'],
+              ['Program / Package', viewBooking.programName],
               ['Event Type', viewBooking.eventType],
-              ['Date', fmtDate(viewBooking.date)],
-              ['Location', viewBooking.location],
+              ['Event Date', fmtDate(viewBooking.date)],
+              ['Venue', viewBooking.venue || 'N/A'],
+              ['Location', `${viewBooking.location} (${viewBooking.branch || 'Jaipur'})`],
+              ['Assigned Manager', viewBooking.assignedTo || 'Piyush'],
+              ['Payment Mode', viewBooking.paymentMode || 'Cash/UPI'],
               ['Status', viewBooking.status],
               ['Total Amount', fmt(viewBooking.totalAmount)],
-              ['Received', fmt(viewBooking.receivedAmount)],
+              ['Advance Received', fmt(viewBooking.receivedAmount)],
               ['Balance Due', fmt(viewBooking.totalAmount - viewBooking.receivedAmount)],
-              ['Created', fmtDate(viewBooking.createdAt)],
+              ['Created At', fmtDate(viewBooking.createdAt)],
             ].map(([k, v]) => (
               <div key={k} className="flex justify-between border-b border-white/5 pb-2">
                 <span className="text-gray-400">{k}</span>
@@ -534,7 +678,7 @@ function BookingsTab({ token }: { token: string }) {
             ))}
             {viewBooking.notes && (
               <div className="bg-white/5 rounded-xl p-3">
-                <p className="text-gray-400 text-xs mb-1">Notes</p>
+                <p className="text-gray-400 text-xs mb-1 font-semibold">Notes</p>
                 <p className="text-white">{viewBooking.notes}</p>
               </div>
             )}
@@ -551,16 +695,24 @@ function BookingsTab({ token }: { token: string }) {
               </div>
             )}
             
-            <div className="pt-4 border-t border-white/5">
+            <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/5">
+              <button
+                type="button"
+                onClick={() => handleWhatsAppMsg(viewBooking)}
+                className="py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold transition-all flex items-center justify-center gap-2 text-xs"
+              >
+                <Send className="w-4 h-4" /> Send WhatsApp
+              </button>
+
               <button
                 type="button"
                 onClick={() => {
                   setDocGeneratorBooking(viewBooking);
                   setViewBooking(null);
                 }}
-                className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold transition-all flex items-center justify-center gap-2"
+                className="py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold transition-all flex items-center justify-center gap-2 text-xs"
               >
-                <FileText className="w-4 h-4" /> Generate Invoice / Bill
+                <FileText className="w-4 h-4" /> Generate Invoice
               </button>
             </div>
           </div>
