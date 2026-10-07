@@ -43,19 +43,7 @@ const bookingSchema = new mongoose.Schema(
     },
     eventType: {
       type: String,
-      enum: [
-        'Pre wedding',
-        'Drone shoot',
-        'Cinematic films',
-        'Bride entry',
-        'Baby shower',
-        'House opening',
-        'Birthday party',
-        'Full wedding photography',
-        'Vermala',
-        'Corporate events',
-        'Other',
-      ],
+      trim: true,
       default: 'Other',
     },
     paymentMode: {

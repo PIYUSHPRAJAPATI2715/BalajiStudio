@@ -328,7 +328,7 @@ function BookingsTab({ token }: { token: string }) {
     clientName: '', clientPhone: '', programName: '', date: '', venue: '', location: '',
     branch: 'Jaipur' as 'Jaipur' | 'Shahpura' | 'Neem Ka Thana',
     assignedTo: 'Piyush' as 'Piyush' | 'Vishnu' | 'Manoj',
-    paymentMode: 'Cash/UPI', eventType: EVENT_TYPES[0],
+    paymentMode: 'Cash/UPI', eventType: EVENT_TYPES[0], customEventType: '',
     totalAmount: '', receivedAmount: '', status: 'upcoming', notes: ''
   };
   const [formData, setFormData] = useState<typeof emptyForm>(emptyForm);
@@ -372,12 +372,15 @@ function BookingsTab({ token }: { token: string }) {
 
   const openEdit = (b: Booking) => {
     setEditBooking(b);
+    const isStandardType = EVENT_TYPES.includes(b.eventType);
     setFormData({
       clientName: b.clientName, clientPhone: b.clientPhone || '', programName: b.programName,
       date: b.date ? b.date.split('T')[0] : '', venue: b.venue || '',
       location: b.location, branch: b.branch || 'Jaipur',
       assignedTo: b.assignedTo || 'Piyush', paymentMode: b.paymentMode || 'Cash/UPI',
-      eventType: b.eventType, totalAmount: String(b.totalAmount),
+      eventType: isStandardType ? b.eventType : 'Other',
+      customEventType: isStandardType ? '' : b.eventType,
+      totalAmount: String(b.totalAmount),
       receivedAmount: String(b.receivedAmount), status: b.status, notes: b.notes || '',
     });
     setShowForm(true);
@@ -389,7 +392,18 @@ function BookingsTab({ token }: { token: string }) {
     e.preventDefault();
     setFormLoading(true);
     try {
-      const payload = { ...formData, totalAmount: Number(formData.totalAmount), receivedAmount: Number(formData.receivedAmount) };
+      const finalEventType = formData.eventType === 'Other' && formData.customEventType.trim()
+        ? formData.customEventType.trim()
+        : formData.eventType;
+
+      const payload = {
+        ...formData,
+        eventType: finalEventType,
+        totalAmount: Number(formData.totalAmount),
+        receivedAmount: Number(formData.receivedAmount)
+      };
+      delete (payload as any).customEventType;
+
       if (editBooking) {
         await api.bookings.update(token, editBooking._id, payload);
       } else {
@@ -585,6 +599,19 @@ ${b.notes ? `\n📝 *Notes:* ${b.notes}` : ''}
             <InputField label="Program / Package *" id="b-program" value={formData.programName} onChange={e => setFormData({ ...formData, programName: e.target.value })} required placeholder="Mandir Decoration Package" />
             <SelectField label="Event Type" id="b-type" value={formData.eventType} onChange={e => setFormData({ ...formData, eventType: e.target.value })} options={EVENT_TYPES} />
           </div>
+
+          {formData.eventType === 'Other' && (
+            <div>
+              <InputField
+                label="Enter Custom Event Type *"
+                id="b-custom-type"
+                value={formData.customEventType}
+                onChange={e => setFormData({ ...formData, customEventType: e.target.value })}
+                required
+                placeholder="e.g. Mandir Decoration, Haldi Ceremony, Sangeet"
+              />
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <InputField label="Event Date *" id="b-date" type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} required />
