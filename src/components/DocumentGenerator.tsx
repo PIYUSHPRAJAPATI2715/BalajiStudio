@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { X, Printer, FileText, Send, Plus, Trash2 } from 'lucide-react';
+import { X, Printer, FileText, Send, Plus, Trash2, Download, Loader2 } from 'lucide-react';
 
 type BookingItem = {
   description: string;
@@ -102,6 +102,7 @@ export default function DocumentGenerator({ booking, onClose }: DocumentGenerato
   );
   
   const [advanceReceived, setAdvanceReceived] = useState(booking.receivedAmount || 0);
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
 
   const [scale, setScale] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -186,6 +187,51 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
       : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
 
     window.open(url, '_blank');
+  };
+
+  const handleDownloadPDF = () => {
+    const element = document.getElementById('print-area-container');
+    if (!element) return;
+    setDownloadingPDF(true);
+
+    const cleanFileName = clientName ? clientName.trim().replace(/\s+/g, '_') : 'Client';
+    const fileName = `${docType === 'bill' ? 'Invoice' : 'Booking_Confirmation'}_SVE_${cleanFileName}.pdf`;
+
+    const opt = {
+      margin: 4,
+      filename: fileName,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    const generatePDF = () => {
+      if ((window as any).html2pdf) {
+        (window as any).html2pdf().set(opt).from(element).save().then(() => {
+          setDownloadingPDF(false);
+        }).catch((err: any) => {
+          console.error('PDF error:', err);
+          setDownloadingPDF(false);
+          handlePrint();
+        });
+      } else {
+        setDownloadingPDF(false);
+        handlePrint();
+      }
+    };
+
+    if ((window as any).html2pdf) {
+      generatePDF();
+    } else {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+      script.onload = () => generatePDF();
+      script.onerror = () => {
+        setDownloadingPDF(false);
+        handlePrint();
+      };
+      document.body.appendChild(script);
+    }
   };
 
   const handlePrint = () => {
@@ -539,19 +585,35 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
         </div>
 
         {/* Action Buttons */}
-        <div className="space-y-2 mt-4">
+        <div className="space-y-2.5 mt-4">
+          <button
+            onClick={handleDownloadPDF}
+            disabled={downloadingPDF}
+            className="w-full py-3.5 bg-gradient-gold hover:bg-amber-400 text-black font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 transition-all active:scale-95 disabled:opacity-50"
+          >
+            {downloadingPDF ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" /> Generating PDF...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4" /> Direct Download PDF Invoice
+              </>
+            )}
+          </button>
+
           <button
             onClick={handleSendWhatsApp}
             className="w-full py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-green-600/20"
           >
-            <Send className="w-4 h-4" /> Send WhatsApp Confirmation
+            <Send className="w-4 h-4" /> Send Invoice to Client (WhatsApp)
           </button>
           
           <button
             onClick={handlePrint}
-            className="w-full py-3.5 bg-gradient-gold hover:bg-amber-400 text-black font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 transition-all active:scale-95"
+            className="w-full py-2.5 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-2 border border-white/10 transition-all"
           >
-            <Printer className="w-4 h-4" /> Print / Save PDF Invoice
+            <Printer className="w-3.5 h-3.5" /> Print / Save via Browser
           </button>
         </div>
       </div>
@@ -587,7 +649,7 @@ ${notes ? `\n📝 *Notes:* ${notes}` : ''}
               <div className="flex items-start justify-between relative z-10">
                 {/* Logo & Company Details */}
                 <div className="flex items-center gap-4">
-                  <div className="relative w-24 h-24 border-2 border-[#c49838] rounded-full overflow-hidden shrink-0 flex items-center justify-center bg-transparent shadow-sm">
+                  <div className="relative w-24 h-24 border-2 border-[#c49838] rounded-full overflow-hidden shrink-0 flex items-center justify-center bg-[#fff8e7] shadow-md ring-2 ring-[#c49838]/30">
                     <Image
                       src="/logo.png"
                       alt="Sidhi Vinayak Events Logo"
